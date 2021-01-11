@@ -1,4 +1,4 @@
-_project/ 
+cablecamFPGAproject/**
 *.jou
 *.Xil
 .directory

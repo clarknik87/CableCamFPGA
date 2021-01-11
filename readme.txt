@@ -19,14 +19,13 @@ top directory:
 				.project
 				system.hdf
 				
-			c_project_folder
+			cablecamSW
 				src
 					lscript.ld
 					*.cpp
 					*.hpp
 					
 				.cproject
-				.gitignore
 				.project
 	
 	"project name".srcs				

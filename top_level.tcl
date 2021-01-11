@@ -6,7 +6,7 @@ set design_name_top ${design_name}_top
 cd  $working_dir
 
 #create a new project, set part and board (if necessary)
-create_project -force $project_name _project
+create_project -force $project_name_project
 set_property board_part digilentinc.com:basys3:part0:1.1 [current_project]
 set_property target_language VHDL [current_project]
 
