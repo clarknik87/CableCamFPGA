@@ -1,4 +1,7 @@
-cablecamFPGAproject/**
+vivado_project/**
 *.jou
 *.Xil
-.directory
+.directory*
+*.log
+cablecamFPGA.sdk/cablecamSW/Debug/
+cablecamFPGA.sdk/standalone_bsp_0/
