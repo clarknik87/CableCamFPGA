@@ -1,3 +1,5 @@
+#ignore automatically generated files from vivado/SDK (there's a lot...)
+
 *.jou
 *.Xil
 .directory

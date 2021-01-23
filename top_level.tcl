@@ -6,7 +6,7 @@ set design_name_top ${design_name}_top
 cd  $working_dir
 
 #create a new project, set part and board (if necessary)
-create_project -force $project_name_project
+create_project -force $project_name vivado_project
 set_property board_part digilentinc.com:basys3:part0:1.1 [current_project]
 set_property target_language VHDL [current_project]
 
@@ -20,8 +20,8 @@ start_gui
 
 #import the microblaze subsystem block design
 source mb_subsystem.tcl
-make_wrapper -files [get_files _project/$project_name.srcs/sources_1/bd/mb_subsystem/mb_subsystem.bd] -top
-add_files -norecurse _project/$project_name.srcs/sources_1/bd/mb_subsystem/hdl/mb_subsystem_wrapper.vhd
+make_wrapper -files [get_files vivado_project/$project_name.srcs/sources_1/bd/mb_subsystem/mb_subsystem.bd] -top
+add_files -norecurse vivado_project/$project_name.srcs/sources_1/bd/mb_subsystem/hdl/mb_subsystem_wrapper.vhd
 update_compile_order -fileset sources_1
 regenerate_bd_layout
 save_bd_design
