@@ -1,4 +1,7 @@
-cablecamFPGAproject/**
 *.jou
 *.Xil
 .directory
+_project/
+**/Debug
+cablecamFPGA.sdk/.project
+**/standalone_bsp_0/microblaze_0/

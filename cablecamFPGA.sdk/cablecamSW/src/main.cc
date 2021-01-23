@@ -45,56 +45,75 @@
  *   ps7_uart    115200 (configured by bootrom/bsp)
  */
 
+
+// Xilinx/Standard Library Includes
 #include <stdio.h>
-//#include "platform.h"
 #include "xil_printf.h"
 #include "microblaze_sleep.h"
 #include "xgpio.h"
+#include "xintc.h"
+#include "xil_exception.h"
 #include "xparameters.h"
-//#include "scanvalue.h"
+//#include "scanvalue.h
+
+// Project Specific Includes
+#include "gpio.hpp"
+#include "platform.h"
+
+int interrupt_init(XIntc &IntrController)
+{
+	int status = XST_SUCCESS;
+
+	// Initialize Interrupt
+	status += XIntc_Initialize(&IntrController, XPAR_AXI_INTC_0_DEVICE_ID);
+	if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to initialize interrupt controller\r\n");
+
+	status += XIntc_SelfTest(&IntrController);
+	if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed interrupt controller self-test\r\n");
+
+	// Enable Interrupt Controller
+	XIntc_Enable(&IntrController, XPAR_INTC_0_GPIO_0_VEC_ID);
+	XIntc_Enable(&IntrController, XPAR_INTC_0_UARTLITE_0_VEC_ID);
+
+
+	//Enable Exception Handler
+	Xil_ExceptionInit();
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XIntc_InterruptHandler, &IntrController);
+	Xil_ExceptionEnable();
+
+	xil_printf("Initialized interrupt controller\r\n");
+	return status;
+}
+
+int interrupt_start(XIntc &IntrController)
+{
+	//Allow interrupts
+	XIntc_Start(&IntrController, XIN_REAL_MODE);
+	xil_printf("Started interrupt controller");
+	return XST_SUCCESS;
+}
 
 
 int main()
 {
-	XGpio gpio_iface;
-	u16 sw = 0;
+	XGpio mainGpioDevice;
+	XIntc mainIntrController;
 
 	// Initialize platform
-    //init_platform();
+    init_platform();
     xil_printf("System reset.\r\n");
 
-    //Initialize GPIO
-    if( XST_SUCCESS != XGpio_Initialize(&gpio_iface, XPAR_AXI_GPIO_0_DEVICE_ID) )
-    	xil_printf("Error in initializing GPIO.\r\n");
-    else
-    	xil_printf("GPIO initialized.\r\n");
+    gpio_init(mainGpioDevice);
+    interrupt_init(mainIntrController);
+    gpio_interrupt_connect(mainGpioDevice, mainIntrController);
+    interrupt_start(mainIntrController);
 
-    // Set GPIO directions. 0 = output, 1 = input
-    XGpio_SetDataDirection(&gpio_iface, 1, 0);
-    XGpio_SetDataDirection(&gpio_iface, 2, 1);
 
-    //Turn the LEDs on by default
-    XGpio_DiscreteWrite(&gpio_iface, 2, 0x0000FFFF);
-
-    // Repeatedly read from the switches and print.
-    // Repeatedly read from the UART and update the LEDs
     while(1)
     {
-    	// Get the value of the switches
-    	sw = XGpio_DiscreteRead(&gpio_iface, 2);
-
-    	// Get the value from the UART
-    	//uval = scanValue();
-
-    	// Get the value of diff and print to the terminal
-    	//iff = sw - uval;
-    	//xil_printf("Diff = %x\n", diff);
-
-    	// Show LSB bits of diff on LEDs, wait, show MSB bits on LEDs
-    	XGpio_DiscreteWrite(&gpio_iface, 1, sw);
-    	MB_Sleep(100);
+    	MB_Sleep(1000);
     }
 
-    //cleanup_platform();
+    cleanup_platform();
     return 0;
 }

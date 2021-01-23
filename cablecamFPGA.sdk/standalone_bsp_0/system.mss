@@ -43,4 +43,10 @@ BEGIN DRIVER
  PARAMETER HW_INSTANCE = microblaze_0_local_memory_ilmb_bram_if_cntlr
 END
 
+BEGIN DRIVER
+ PARAMETER DRIVER_NAME = intc
+ PARAMETER DRIVER_VER = 3.7
+ PARAMETER HW_INSTANCE = axi_intc_0
+END
+
 
