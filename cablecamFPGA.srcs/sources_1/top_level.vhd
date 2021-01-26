@@ -38,7 +38,9 @@ entity top_level is
         sw              :   in  std_logic_vector(15 downto 0);
         led             :   out std_logic_vector(15 downto 0);
         usb_uart_rxd    :   in  std_logic;
-        usb_uart_txd    :   out std_logic
+        usb_uart_txd    :   out std_logic;
+        stormUART_rxd   :   in  std_logic;
+        stormUART_txd   :   out std_logic
     );
 end top_level;
 
@@ -51,7 +53,9 @@ component mb_subsystem_wrapper is
     sys_clk : in STD_LOGIC;
     sys_reset : in STD_LOGIC;
     usb_uart_rxd : in STD_LOGIC;
-    usb_uart_txd : out STD_LOGIC
+    usb_uart_txd : out STD_LOGIC;
+    stormUART_rxd : in STD_LOGIC;
+    stormUART_txd : out STD_LOGIC
   );
 end component;
 
@@ -64,7 +68,9 @@ port map(
     sys_clk         => clk,
     sys_reset       => rst,
     usb_uart_rxd    => usb_uart_rxd,
-    usb_uart_txd    => usb_uart_txd
+    usb_uart_txd    => usb_uart_txd,
+    stormUART_rxd   => stormUART_rxd,
+    stormUART_txd   => stormUART_txd
 );
 
 

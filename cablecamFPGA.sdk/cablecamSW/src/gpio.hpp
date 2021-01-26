@@ -14,10 +14,14 @@
 #define GPIO_SWITCH_CHANNEL 2
 #define GPIO_LED_CHANNEL	1
 
-void gpio_handler(void *callback);
-int gpio_init(XGpio &GpioDevice);
-int gpio_interrupt_connect(XGpio &GpioDevice, XIntc &IntrController);
+namespace gpio
+{
 
+	void handler(void *callback);
+	int init();
+	int interrupt_connect(XIntc &IntrController);
+
+}
 
 
 #endif /* SRC_GPIO_HPP_ */

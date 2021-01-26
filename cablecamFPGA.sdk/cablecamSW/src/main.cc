@@ -58,6 +58,7 @@
 
 // Project Specific Includes
 #include "gpio.hpp"
+#include "debug_uart.hpp"
 #include "platform.h"
 
 int interrupt_init(XIntc &IntrController)
@@ -70,11 +71,6 @@ int interrupt_init(XIntc &IntrController)
 
 	status += XIntc_SelfTest(&IntrController);
 	if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed interrupt controller self-test\r\n");
-
-	// Enable Interrupt Controller
-	XIntc_Enable(&IntrController, XPAR_INTC_0_GPIO_0_VEC_ID);
-	XIntc_Enable(&IntrController, XPAR_INTC_0_UARTLITE_0_VEC_ID);
-
 
 	//Enable Exception Handler
 	Xil_ExceptionInit();
@@ -89,25 +85,27 @@ int interrupt_start(XIntc &IntrController)
 {
 	//Allow interrupts
 	XIntc_Start(&IntrController, XIN_REAL_MODE);
-	xil_printf("Started interrupt controller");
+	xil_printf("Started interrupt controller\r\n");
 	return XST_SUCCESS;
 }
 
 
 int main()
 {
-	XGpio mainGpioDevice;
 	XIntc mainIntrController;
 
 	// Initialize platform
     init_platform();
     xil_printf("System reset.\r\n");
 
-    gpio_init(mainGpioDevice);
+    gpio::init();
     interrupt_init(mainIntrController);
-    gpio_interrupt_connect(mainGpioDevice, mainIntrController);
-    interrupt_start(mainIntrController);
+    debug_uart::init();
 
+    gpio::interrupt_connect(mainIntrController);
+    debug_uart::interrupt_connect(mainIntrController);
+
+    interrupt_start(mainIntrController);
 
     while(1)
     {
