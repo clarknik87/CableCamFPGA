@@ -316,6 +316,7 @@ proc create_root_design { parentCell } {
   # Create instance: axi_uartlite_Storm32, and set properties
   set axi_uartlite_Storm32 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_Storm32 ]
   set_property -dict [ list \
+   CONFIG.C_BAUDRATE {115200} \
    CONFIG.UARTLITE_BOARD_INTERFACE {Custom} \
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_uartlite_Storm32
@@ -323,6 +324,7 @@ proc create_root_design { parentCell } {
   # Create instance: axi_uartlite_usb, and set properties
   set axi_uartlite_usb [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_usb ]
   set_property -dict [ list \
+   CONFIG.C_BAUDRATE {115200} \
    CONFIG.UARTLITE_BOARD_INTERFACE {usb_uart} \
  ] $axi_uartlite_usb
 
