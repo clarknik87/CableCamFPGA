@@ -16,13 +16,8 @@
 
 namespace gpio
 {
-
-	void handler(void *callback);
 	int init();
 	int interrupt_connect(XIntc &IntrController);
-	void stop_send();
-	void clear_fifos();
-
 }
 
 

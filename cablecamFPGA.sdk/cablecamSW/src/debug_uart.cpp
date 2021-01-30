@@ -16,7 +16,9 @@
 constexpr int buffer_size{64};
 static uint8_t sendBuffer[buffer_size];
 static uint8_t recvBuffer[buffer_size];
+static int recv_length;
 static bool send_complete = true;
+static bool update_required = false;
 static int recv_offset = 0;
 
 static XUartLite uartDevice;
@@ -33,7 +35,7 @@ static void SendHandler(void *CallBackRef, unsigned int EventData)
 static void RecvHandler(void *CallBackRef, unsigned int EventData)
 {
 	// This structure will add characters to the receive buffer one by one.
-	// It allows for a packet structure to be implemented eventually
+	// This allows for a packet structure to signal when a transmission has ended.
 	int cnt = XUartLite_Recv(&uartDevice, recvBuffer + recv_offset, 1);
 	if( cnt != 0)
 	{
@@ -41,6 +43,7 @@ static void RecvHandler(void *CallBackRef, unsigned int EventData)
 
 		if(recvBuffer[recv_offset-1] == '\r')
 		{
+			recv_length = recv_offset;
 			recv_offset = 0;
 			packet_recv_handler();
 		}
@@ -52,7 +55,7 @@ static void RecvHandler(void *CallBackRef, unsigned int EventData)
 
 void packet_recv_handler()
 {
-	xil_printf("End of transmission\r\n");
+	update_required = true;
 	return;
 }
 
@@ -87,6 +90,17 @@ namespace debug_uart
 		XUartLite_EnableInterrupt(&uartDevice);
 
 		return status;
+	}
+
+	void update()
+	{
+		if(update_required)
+		{
+			update_required = false;
+
+			//Repeat received packet back to sender
+			send(recvBuffer, recv_length);
+		}
 	}
 
 	/*

@@ -49,12 +49,11 @@
 // Xilinx/Standard Library Includes
 #include <stdio.h>
 #include "xil_printf.h"
-#include "microblaze_sleep.h"
+//#include "microblaze_sleep.h"
 #include "xgpio.h"
 #include "xintc.h"
 #include "xil_exception.h"
 #include "xparameters.h"
-//#include "scanvalue.h
 
 // Project Specific Includes
 #include "gpio.hpp"
@@ -98,18 +97,21 @@ int main()
     init_platform();
     xil_printf("System reset.\r\n");
 
+    // Call task init() functions
     gpio::init();
     interrupt_init(mainIntrController);
     debug_uart::init();
 
+    // Connect task interrupts
     gpio::interrupt_connect(mainIntrController);
     debug_uart::interrupt_connect(mainIntrController);
 
+    // Start interrupt controller
     interrupt_start(mainIntrController);
 
-    while(1)
+    while(true)
     {
-    	MB_Sleep(1000);
+    	debug_uart::update();
     }
 
     cleanup_platform();

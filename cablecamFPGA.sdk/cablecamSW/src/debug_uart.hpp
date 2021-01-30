@@ -14,9 +14,11 @@
 namespace debug_uart
 {
 	int init();
+	int interrupt_connect(XIntc &IntrController);
+	void update();
+
 	int send(uint8_t *buffer, int length);
 	int receive(uint8_t *buffer, int length);
-	int interrupt_connect(XIntc &IntrController);
 }
 
 #endif /* SRC_DEBUG_UART_HPP_ */
