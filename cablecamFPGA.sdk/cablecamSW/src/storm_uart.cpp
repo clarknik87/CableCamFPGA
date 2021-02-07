@@ -1,12 +1,12 @@
 /*
- * debug_uart.cpp
+ * storm_uart.cpp
  *
- *  Created on: Jan 25, 2021
+ *  Created on: Jan 30, 2021
  *      Author: Nik Clark
  */
 
 
-#include "debug_uart.hpp"
+#include "storm_uart.hpp"
 #include "xuartlite.h"
 #include "xparameters.h"
 #include "xil_printf.h"
@@ -22,6 +22,7 @@ static bool update_required = false;
 
 static XUartLite uartDevice;
 
+
 static void SendHandler(void *CallBackRef, unsigned int EventData)
 {
 	send_complete = true;
@@ -36,7 +37,7 @@ static void RecvHandler(void *CallBackRef, unsigned int EventData)
 	int cnt = XUartLite_Recv(&uartDevice, recvBuffer + recv_offset, 1);
 	if( cnt != 0)
 	{
-		const int start_byte = 0xFA;
+		const int start_byte = 0xFB;
 		static int payload_length;
 
 		if(recv_offset == 0)
@@ -69,18 +70,17 @@ static void RecvHandler(void *CallBackRef, unsigned int EventData)
 	}
 }
 
-
-namespace debug_uart
+namespace storm_uart
 {
 	int init()
 	{
 		int status = XST_SUCCESS;
 
-		status += XUartLite_Initialize(&uartDevice, XPAR_AXI_UARTLITE_USB_DEVICE_ID);
-		if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to initialize debug uart\r\n");
+		status += XUartLite_Initialize(&uartDevice, XPAR_AXI_UARTLITE_STORM32_DEVICE_ID);
+		if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to initialize storm uart\r\n");
 
 		status += XUartLite_SelfTest(&uartDevice);
-		if(status != XST_SUCCESS) xil_printf("<ERROR> = Debug uart failed self test\r\n");
+		if(status != XST_SUCCESS) xil_printf("<ERROR> = Storm uart failed self test\r\n");
 
 		return XST_SUCCESS;
 	}
@@ -88,10 +88,10 @@ namespace debug_uart
 	int interrupt_connect(XIntc &IntrController)
 	{
 		int status = XST_SUCCESS;
-		const int interrupt_id = XPAR_AXI_INTC_0_AXI_UARTLITE_USB_INTERRUPT_INTR;
+		const int interrupt_id = XPAR_AXI_INTC_0_AXI_UARTLITE_STORM32_INTERRUPT_INTR;
 
 		status += XIntc_Connect(&IntrController, interrupt_id, (XInterruptHandler)XUartLite_InterruptHandler, (void *)&uartDevice );
-		if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to connect interrupt handler for debug uart\r\n");
+		if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to connect interrupt handler for storm uart\r\n");
 
 		XIntc_Enable(&IntrController, interrupt_id);
 
@@ -109,8 +109,7 @@ namespace debug_uart
 		{
 			update_required = false;
 
-			//Repeat received packet back to sender
-			send(recvBuffer, recv_length);
+
 		}
 	}
 
@@ -147,3 +146,4 @@ namespace debug_uart
 		XUartLite_ResetFifos(&uartDevice);
 	}
 }
+
