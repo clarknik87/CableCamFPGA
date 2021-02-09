@@ -7,6 +7,7 @@
 
 
 #include "debug_uart.hpp"
+#include "storm_uart.hpp"
 #include "xuartlite.h"
 #include "xparameters.h"
 #include "xil_printf.h"
@@ -109,8 +110,8 @@ namespace debug_uart
 		{
 			update_required = false;
 
-			//Repeat received packet back to sender
-			send(recvBuffer, recv_length);
+			//Send received packet to storm module
+			storm_uart::send(recvBuffer, recv_length);
 		}
 	}
 

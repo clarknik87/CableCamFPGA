@@ -112,13 +112,13 @@ def recv_all(uart):
 
 def main():
 
-	#debug_print_serial_port_data()
+	debug_print_serial_port_data()
 
 	comlist = serial.tools.list_ports.comports()
 	port_found = False
 	basys_port = ""
 	for dev in comlist:
-		if (dev.manufacturer == "Digilent"):
+		if (dev.manufacturer == "Microsoft"):
 			basys_port = dev.device
 			port_found = True
 	
@@ -129,12 +129,14 @@ def main():
 		uart.baudrate = 115200
 		uart.timeout = 2.5
 
-		#send_get_version_packet(uart)
-		#rtn_pkt = recv_packet(uart)		
-		#if(rtn_pkt != 0):
-		#	print("\nPacket recieved: ")
-		#	for x in rtn_pkt:
-		#		print( hex(x) )
+		send_get_version_packet(uart)
+		rtn_pkt = recv_packet(uart)
+
+				
+		if(rtn_pkt != 0):
+			print("\nPacket recieved: ")
+			for x in rtn_pkt:
+				print( hex(x) )
 
 		send_get_version_packet(uart)                
 		rtn_pkt = recv_all(uart)

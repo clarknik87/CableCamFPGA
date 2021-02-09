@@ -7,6 +7,7 @@
 
 
 #include "storm_uart.hpp"
+#include "debug_uart.hpp"
 #include "xuartlite.h"
 #include "xparameters.h"
 #include "xil_printf.h"
@@ -38,7 +39,7 @@ static void RecvHandler(void *CallBackRef, unsigned int EventData)
 	if( cnt != 0)
 	{
 		const int start_byte = 0xFB;
-		static int payload_length;
+		static int payload_length = 0;
 
 		if(recv_offset == 0)
 		{
@@ -109,7 +110,8 @@ namespace storm_uart
 		{
 			update_required = false;
 
-
+			// Send received packet through debug_uart
+			debug_uart::send(recvBuffer, recv_length);
 		}
 	}
 

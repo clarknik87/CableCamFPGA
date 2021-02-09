@@ -58,6 +58,7 @@
 // Project Specific Includes
 #include "gpio.hpp"
 #include "debug_uart.hpp"
+#include "storm_uart.hpp"
 #include "platform.h"
 
 int interrupt_init(XIntc &IntrController)
@@ -101,10 +102,12 @@ int main()
     gpio::init();
     interrupt_init(mainIntrController);
     debug_uart::init();
+    storm_uart::init();
 
     // Connect task interrupts
     gpio::interrupt_connect(mainIntrController);
     debug_uart::interrupt_connect(mainIntrController);
+    storm_uart::interrupt_connect(mainIntrController);
 
     // Start interrupt controller
     interrupt_start(mainIntrController);
@@ -112,6 +115,7 @@ int main()
     while(true)
     {
     	debug_uart::update();
+    	storm_uart::update();
     }
 
     cleanup_platform();
