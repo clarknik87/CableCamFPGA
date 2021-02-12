@@ -14,12 +14,14 @@
 #include <cstdint>
 #include <cstdlib>
 
+#include "packets/version.hpp"
+
 constexpr int buffer_size{64};
 static uint8_t sendBuffer[buffer_size];
 static uint8_t recvBuffer[buffer_size];
-static int recv_length;
-static bool send_complete = true;
-static bool update_required = false;
+static volatile int recv_length;
+static volatile bool send_complete = true;
+static volatile bool update_required = false;
 
 static XUartLite uartDevice;
 
@@ -89,7 +91,7 @@ namespace storm_uart
 	int interrupt_connect(XIntc &IntrController)
 	{
 		int status = XST_SUCCESS;
-		const int interrupt_id = XPAR_AXI_INTC_0_AXI_UARTLITE_STORM32_INTERRUPT_INTR;
+		const int interrupt_id = XPAR_INTC_0_UARTLITE_0_VEC_ID;
 
 		status += XIntc_Connect(&IntrController, interrupt_id, (XInterruptHandler)XUartLite_InterruptHandler, (void *)&uartDevice );
 		if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to connect interrupt handler for storm uart\r\n");
@@ -102,6 +104,27 @@ namespace storm_uart
 		XUartLite_EnableInterrupt(&uartDevice);
 
 		return status;
+	}
+
+	int init_storm_parameters()
+	{
+		VersionPkt::request  vrqpkt;
+		VersionPkt::response vrspkt;
+		if(sendreceive(vrqpkt.raw, sizeof(vrqpkt.pkt), vrspkt.raw, sizeof(vrspkt.pkt)) == XST_SUCCESS)
+		{
+			if(vrspkt.check_crc())
+			{
+				xil_printf("<INFO> = Firmware Version:   %d\r\n", vrspkt.pkt.fwversion);
+				xil_printf("<INFO> = Layout Version:     %d\r\n", vrspkt.pkt.layoutversion);
+				xil_printf("<INFO> = Board Capabilities: %d\r\n", vrspkt.pkt.boardcapabilities);
+			}
+			else
+				xil_printf("<ERROR> = Invalid version packet received\r\n");
+		}
+		else
+			xil_printf("<ERROR> = Unable to retrieve version data\r\n");
+
+		return XST_SUCCESS;
 	}
 
 	void update()
@@ -138,14 +161,24 @@ namespace storm_uart
 		return XST_SUCCESS;
 	}
 
-	void stop_send()
+	int sendreceive(uint8_t *p_sendbuf, int p_sendlength, uint8_t *p_recvbuf, int p_recvlength)
 	{
-		XUartLite_Send(&uartDevice, nullptr, 0);
-	}
+		if (p_sendbuf == nullptr || p_recvbuf == nullptr)
+			return XST_NO_DATA;
 
-	void clear_fifos()
-	{
-		XUartLite_ResetFifos(&uartDevice);
+		if (send(p_sendbuf, p_sendlength) == XST_DEVICE_BUSY)
+			return XST_DEVICE_BUSY;
+
+		while(!update_required)
+		{
+		}
+
+		if(p_recvlength != recv_length)
+			return XST_BUFFER_TOO_SMALL;
+
+		memcpy(p_recvbuf, recvBuffer, recv_length);
+
+		return XST_SUCCESS;
 	}
 }
 

@@ -46,7 +46,6 @@ int init()
 	XGpio_InterruptEnable(&gpioDevice, XGPIO_IR_CH2_MASK);
 	XGpio_InterruptGlobalEnable(&gpioDevice);
 
-	xil_printf("GPIO initialized\r\n");
 	return status;
 }
 
@@ -54,11 +53,10 @@ int interrupt_connect(XIntc &IntrController)
 {
 	int status = XIntc_Connect(&IntrController,XPAR_INTC_0_GPIO_0_VEC_ID, (Xil_ExceptionHandler)gpio::handler, &gpioDevice );
 	if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to connect GPIO interrupt\r\n");
-	else xil_printf("GPIO interrupt handler connected\r\n");
 
-	XIntc_Enable(&IntrController, XPAR_INTC_0_UARTLITE_0_VEC_ID);
+	XIntc_Enable(&IntrController, XPAR_INTC_0_GPIO_0_VEC_ID);
 
 	return status;
 }
 
-} // End namespace gpio
+}

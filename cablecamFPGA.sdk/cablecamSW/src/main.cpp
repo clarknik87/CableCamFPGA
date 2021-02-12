@@ -76,8 +76,6 @@ int interrupt_init(XIntc &IntrController)
 	Xil_ExceptionInit();
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XIntc_InterruptHandler, &IntrController);
 	Xil_ExceptionEnable();
-
-	xil_printf("Initialized interrupt controller\r\n");
 	return status;
 }
 
@@ -85,7 +83,6 @@ int interrupt_start(XIntc &IntrController)
 {
 	//Allow interrupts
 	XIntc_Start(&IntrController, XIN_REAL_MODE);
-	xil_printf("Started interrupt controller\r\n");
 	return XST_SUCCESS;
 }
 
@@ -96,21 +93,26 @@ int main()
 
 	// Initialize platform
     init_platform();
-    xil_printf("System reset.\r\n");
+    xil_printf("<status> = System reset.\r\n");
 
     // Call task init() functions
     gpio::init();
     interrupt_init(mainIntrController);
     debug_uart::init();
     storm_uart::init();
+    xil_printf("<status> = Peripherals initialized\r\n");
 
     // Connect task interrupts
     gpio::interrupt_connect(mainIntrController);
     debug_uart::interrupt_connect(mainIntrController);
     storm_uart::interrupt_connect(mainIntrController);
+    xil_printf("<status> = Interrupts connected\r\n");
 
     // Start interrupt controller
     interrupt_start(mainIntrController);
+    xil_printf("<status> = Started interrupt controller\r\n");
+
+    storm_uart::init_storm_parameters();
 
     while(true)
     {

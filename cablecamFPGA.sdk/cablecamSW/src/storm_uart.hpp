@@ -16,10 +16,11 @@ namespace storm_uart
 
 	int init();
 	int interrupt_connect(XIntc &IntrController);
+	int init_storm_parameters();
 	void update();
 
 	int send(uint8_t *buffer, int length);
-	int receive(uint8_t *buffer, int length);
+	int sendreceive(uint8_t *p_sendbuf, int p_sendlength, uint8_t *p_recvbuf, int p_recvlength);
 
 }
 

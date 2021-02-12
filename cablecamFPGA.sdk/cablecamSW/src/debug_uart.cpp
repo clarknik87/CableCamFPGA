@@ -17,9 +17,9 @@
 constexpr int buffer_size{64};
 static uint8_t sendBuffer[buffer_size];
 static uint8_t recvBuffer[buffer_size];
-static int recv_length;
-static bool send_complete = true;
-static bool update_required = false;
+static volatile int recv_length;
+static volatile bool send_complete = true;
+static volatile bool update_required = false;
 
 static XUartLite uartDevice;
 
@@ -138,13 +138,4 @@ namespace debug_uart
 		return XST_SUCCESS;
 	}
 
-	void stop_send()
-	{
-		XUartLite_Send(&uartDevice, nullptr, 0);
-	}
-
-	void clear_fifos()
-	{
-		XUartLite_ResetFifos(&uartDevice);
-	}
 }
