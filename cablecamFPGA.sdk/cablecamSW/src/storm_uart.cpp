@@ -15,6 +15,7 @@
 #include <cstdlib>
 
 #include "packets/version.hpp"
+#include "packets/parameter.hpp"
 
 constexpr int buffer_size{64};
 static uint8_t sendBuffer[buffer_size];
@@ -119,10 +120,41 @@ namespace storm_uart
 				xil_printf("<INFO> = Board Capabilities: %d\r\n", vrspkt.pkt.boardcapabilities);
 			}
 			else
+			{
 				xil_printf("<ERROR> = Invalid version packet received\r\n");
+			}
 		}
 		else
+		{
 			xil_printf("<ERROR> = Unable to retrieve version data\r\n");
+		}
+
+		SetParameterPkt::request  sprqpkt;
+		SetParameterPkt::response sprspkt;
+		auto SetParam = [&sprqpkt, &sprspkt](int paramnum, int paramval){
+			sprqpkt.pkt.paramnum = paramnum;
+			sprqpkt.pkt.paramval = paramval;
+			int status = sendreceive(sprqpkt.raw, sizeof(sprqpkt.pkt), sprspkt.raw, sizeof(sprspkt.pkt));
+			if(status == XST_SUCCESS)
+			{
+				if(sprspkt.check_crc())
+				{
+					xil_printf("<INFO> = parameter %d = %d\r\n", paramnum, paramval);
+				}
+				else
+				{
+					xil_printf("<ERROR> = Invalid set parameter packet received\r\n");
+				}
+			}
+			else
+			{
+				xil_printf("<ERROR> = set parameter packet failed\r\n");
+			}
+		};
+
+		SetParam(ParameterConst::pitchP, 500);
+		SetParam(ParameterConst::pitchI, 3000);
+		SetParam(ParameterConst::pitchD, 300);
 
 		return XST_SUCCESS;
 	}
@@ -172,6 +204,7 @@ namespace storm_uart
 		while(!update_required)
 		{
 		}
+		update_required = false;
 
 		if(p_recvlength != recv_length)
 			return XST_BUFFER_TOO_SMALL;

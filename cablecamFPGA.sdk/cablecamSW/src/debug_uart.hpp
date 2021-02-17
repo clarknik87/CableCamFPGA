@@ -18,7 +18,7 @@ namespace debug_uart
 	void update();
 
 	int send(uint8_t *buffer, int length);
-	int receive(uint8_t *buffer, int length);
+	void wait();
 }
 
 #endif /* SRC_DEBUG_UART_HPP_ */

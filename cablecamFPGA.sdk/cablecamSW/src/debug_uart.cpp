@@ -138,4 +138,11 @@ namespace debug_uart
 		return XST_SUCCESS;
 	}
 
+	void wait()
+	{
+		while( XUartLite_IsSending(&uartDevice) )
+		{
+		}
+	}
+
 }
