@@ -17,7 +17,7 @@ add_files -fileset sources_1 ./$project_name.srcs/sources_1/
 add_files -fileset constrs_1 ./$project_name.srcs/constrs_1/Basys3_Master.xdc
 
 #add custom IP blocks
-set_property  ip_repo_paths  /home/ecestudent/CableCam/cablecamRepo/cablecamFPGA.srcs/IP_1/pwm_interpreter_1.0 [current_project]
+set_property ip_repo_paths ./$project_name.srcs/IP_1/ [current_project]
 update_ip_catalog
 
 start_gui
