@@ -40,7 +40,8 @@ entity top_level is
         usb_uart_rxd    :   in  std_logic;
         usb_uart_txd    :   out std_logic;
         stormUART_rxd   :   in  std_logic;
-        stormUART_txd   :   out std_logic
+        stormUART_txd   :   out std_logic;
+        pwm_in          :   in  std_logic
     );
 end top_level;
 
@@ -48,6 +49,7 @@ architecture Behavioral of top_level is
 
 component mb_subsystem_wrapper is
   port (
+    PWM_in : in STD_LOGIC;
     led : out STD_LOGIC_VECTOR ( 15 downto 0 );
     sw : in STD_LOGIC_VECTOR ( 15 downto 0 );
     sys_clk : in STD_LOGIC;
@@ -63,6 +65,7 @@ begin
 
 microblaze_system : mb_subsystem_wrapper
 port map(
+    PWM_in          => pwm_in,
     led             => led,
     sw              => sw,
     sys_clk         => clk,
