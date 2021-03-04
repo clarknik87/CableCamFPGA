@@ -133,6 +133,7 @@ xilinx.com:ip:microblaze:10.0\
 user.org:user:pwm_interpreter:1.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:xlconcat:2.1\
+xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:lmb_bram_if_cntlr:4.0\
 xilinx.com:ip:lmb_v10:3.0\
 xilinx.com:ip:blk_mem_gen:8.4\
@@ -284,7 +285,7 @@ proc create_root_design { parentCell } {
   # Create interface ports
 
   # Create ports
-  set PWM_in [ create_bd_port -dir I PWM_in ]
+  set PWMin [ create_bd_port -dir I -from 5 -to 0 PWMin ]
   set led [ create_bd_port -dir O -from 15 -to 0 led ]
   set stormUART_rxd [ create_bd_port -dir I -type data stormUART_rxd ]
   set stormUART_txd [ create_bd_port -dir O -type data stormUART_txd ]
@@ -354,7 +355,8 @@ proc create_root_design { parentCell } {
   # Create instance: microblaze_0_axi_periph, and set properties
   set microblaze_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 microblaze_0_axi_periph ]
   set_property -dict [ list \
-   CONFIG.NUM_MI {5} \
+   CONFIG.ENABLE_ADVANCED_OPTIONS {0} \
+   CONFIG.NUM_MI {10} \
  ] $microblaze_0_axi_periph
 
   # Create instance: microblaze_0_local_memory
@@ -362,6 +364,21 @@ proc create_root_design { parentCell } {
 
   # Create instance: pwm_interpreter_0, and set properties
   set pwm_interpreter_0 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_0 ]
+
+  # Create instance: pwm_interpreter_1, and set properties
+  set pwm_interpreter_1 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_1 ]
+
+  # Create instance: pwm_interpreter_2, and set properties
+  set pwm_interpreter_2 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_2 ]
+
+  # Create instance: pwm_interpreter_3, and set properties
+  set pwm_interpreter_3 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_3 ]
+
+  # Create instance: pwm_interpreter_4, and set properties
+  set pwm_interpreter_4 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_4 ]
+
+  # Create instance: pwm_interpreter_5, and set properties
+  set pwm_interpreter_5 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_5 ]
 
   # Create instance: rst_clk_wiz_1_100M, and set properties
   set rst_clk_wiz_1_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_clk_wiz_1_100M ]
@@ -372,8 +389,59 @@ proc create_root_design { parentCell } {
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
   set_property -dict [ list \
-   CONFIG.NUM_PORTS {4} \
+   CONFIG.NUM_PORTS {9} \
  ] $xlconcat_0
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {0} \
+   CONFIG.DIN_TO {0} \
+   CONFIG.DIN_WIDTH {6} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_0
+
+  # Create instance: xlslice_1, and set properties
+  set xlslice_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_1 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {1} \
+   CONFIG.DIN_TO {1} \
+   CONFIG.DIN_WIDTH {6} \
+ ] $xlslice_1
+
+  # Create instance: xlslice_2, and set properties
+  set xlslice_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_2 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {6} \
+ ] $xlslice_2
+
+  # Create instance: xlslice_3, and set properties
+  set xlslice_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_3 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {3} \
+   CONFIG.DIN_TO {3} \
+   CONFIG.DIN_WIDTH {6} \
+ ] $xlslice_3
+
+  # Create instance: xlslice_4, and set properties
+  set xlslice_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_4 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {4} \
+   CONFIG.DIN_TO {4} \
+   CONFIG.DIN_WIDTH {6} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_4
+
+  # Create instance: xlslice_5, and set properties
+  set xlslice_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_5 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {5} \
+   CONFIG.DIN_TO {5} \
+   CONFIG.DIN_WIDTH {6} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_5
 
   # Create interface connections
   connect_bd_intf_net -intf_net axi_intc_0_interrupt [get_bd_intf_pins axi_intc_0/interrupt] [get_bd_intf_pins microblaze_0/INTERRUPT]
@@ -383,12 +451,17 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net microblaze_0_axi_periph_M02_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins microblaze_0_axi_periph/M02_AXI]
   connect_bd_intf_net -intf_net microblaze_0_axi_periph_M03_AXI [get_bd_intf_pins axi_uartlite_Storm32/S_AXI] [get_bd_intf_pins microblaze_0_axi_periph/M03_AXI]
   connect_bd_intf_net -intf_net microblaze_0_axi_periph_M04_AXI [get_bd_intf_pins microblaze_0_axi_periph/M04_AXI] [get_bd_intf_pins pwm_interpreter_0/S00_AXI]
+  connect_bd_intf_net -intf_net microblaze_0_axi_periph_M05_AXI [get_bd_intf_pins microblaze_0_axi_periph/M05_AXI] [get_bd_intf_pins pwm_interpreter_1/S00_AXI]
+  connect_bd_intf_net -intf_net microblaze_0_axi_periph_M06_AXI [get_bd_intf_pins microblaze_0_axi_periph/M06_AXI] [get_bd_intf_pins pwm_interpreter_2/S00_AXI]
+  connect_bd_intf_net -intf_net microblaze_0_axi_periph_M07_AXI [get_bd_intf_pins microblaze_0_axi_periph/M07_AXI] [get_bd_intf_pins pwm_interpreter_3/S00_AXI]
+  connect_bd_intf_net -intf_net microblaze_0_axi_periph_M08_AXI [get_bd_intf_pins microblaze_0_axi_periph/M08_AXI] [get_bd_intf_pins pwm_interpreter_4/S00_AXI]
+  connect_bd_intf_net -intf_net microblaze_0_axi_periph_M09_AXI [get_bd_intf_pins microblaze_0_axi_periph/M09_AXI] [get_bd_intf_pins pwm_interpreter_5/S00_AXI]
   connect_bd_intf_net -intf_net microblaze_0_debug [get_bd_intf_pins mdm_1/MBDEBUG_0] [get_bd_intf_pins microblaze_0/DEBUG]
   connect_bd_intf_net -intf_net microblaze_0_dlmb_1 [get_bd_intf_pins microblaze_0/DLMB] [get_bd_intf_pins microblaze_0_local_memory/DLMB]
   connect_bd_intf_net -intf_net microblaze_0_ilmb_1 [get_bd_intf_pins microblaze_0/ILMB] [get_bd_intf_pins microblaze_0_local_memory/ILMB]
 
   # Create port connections
-  connect_bd_net -net PWM_in_1 [get_bd_ports PWM_in] [get_bd_pins pwm_interpreter_0/pwm_in]
+  connect_bd_net -net PWMin_1 [get_bd_ports PWMin] [get_bd_pins xlslice_0/Din] [get_bd_pins xlslice_1/Din] [get_bd_pins xlslice_2/Din] [get_bd_pins xlslice_3/Din] [get_bd_pins xlslice_4/Din] [get_bd_pins xlslice_5/Din]
   connect_bd_net -net axi_gpio_0_gpio_io_o [get_bd_ports led] [get_bd_pins axi_gpio_0/gpio_io_o]
   connect_bd_net -net axi_gpio_0_ip2intc_irpt [get_bd_pins axi_gpio_0/ip2intc_irpt] [get_bd_pins xlconcat_0/In0]
   connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_usb/interrupt] [get_bd_pins xlconcat_0/In1]
@@ -396,18 +469,29 @@ proc create_root_design { parentCell } {
   connect_bd_net -net axi_uartlite_Storm32_interrupt [get_bd_pins axi_uartlite_Storm32/interrupt] [get_bd_pins xlconcat_0/In2]
   connect_bd_net -net axi_uartlite_Storm32_tx [get_bd_ports stormUART_txd] [get_bd_pins axi_uartlite_Storm32/tx]
   connect_bd_net -net mdm_1_debug_sys_rst [get_bd_pins mdm_1/Debug_SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/mb_debug_sys_rst]
-  connect_bd_net -net microblaze_0_Clk [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_uartlite_Storm32/s_axi_aclk] [get_bd_pins axi_uartlite_usb/s_axi_aclk] [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins pwm_interpreter_0/s00_axi_aclk] [get_bd_pins rst_clk_wiz_1_100M/slowest_sync_clk]
+  connect_bd_net -net microblaze_0_Clk [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_uartlite_Storm32/s_axi_aclk] [get_bd_pins axi_uartlite_usb/s_axi_aclk] [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/M09_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins pwm_interpreter_0/s00_axi_aclk] [get_bd_pins pwm_interpreter_1/s00_axi_aclk] [get_bd_pins pwm_interpreter_2/s00_axi_aclk] [get_bd_pins pwm_interpreter_3/s00_axi_aclk] [get_bd_pins pwm_interpreter_4/s00_axi_aclk] [get_bd_pins pwm_interpreter_5/s00_axi_aclk] [get_bd_pins rst_clk_wiz_1_100M/slowest_sync_clk]
   connect_bd_net -net pwm_interpreter_0_interrupt [get_bd_pins pwm_interpreter_0/interrupt] [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net pwm_interpreter_1_interrupt [get_bd_pins pwm_interpreter_1/interrupt] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net pwm_interpreter_2_interrupt [get_bd_pins pwm_interpreter_2/interrupt] [get_bd_pins xlconcat_0/In5]
+  connect_bd_net -net pwm_interpreter_3_interrupt [get_bd_pins pwm_interpreter_3/interrupt] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net pwm_interpreter_4_interrupt [get_bd_pins pwm_interpreter_4/interrupt] [get_bd_pins xlconcat_0/In7]
+  connect_bd_net -net pwm_interpreter_5_interrupt [get_bd_pins pwm_interpreter_5/interrupt] [get_bd_pins xlconcat_0/In8]
   connect_bd_net -net rst_clk_wiz_1_100M_bus_struct_reset [get_bd_pins microblaze_0_local_memory/SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/bus_struct_reset]
   connect_bd_net -net rst_clk_wiz_1_100M_interconnect_aresetn [get_bd_pins microblaze_0_axi_periph/ARESETN] [get_bd_pins rst_clk_wiz_1_100M/interconnect_aresetn]
   connect_bd_net -net rst_clk_wiz_1_100M_mb_reset [get_bd_pins microblaze_0/Reset] [get_bd_pins rst_clk_wiz_1_100M/mb_reset]
-  connect_bd_net -net rst_clk_wiz_1_100M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_uartlite_Storm32/s_axi_aresetn] [get_bd_pins axi_uartlite_usb/s_axi_aresetn] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/M03_ARESETN] [get_bd_pins microblaze_0_axi_periph/M04_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins pwm_interpreter_0/rst_l] [get_bd_pins pwm_interpreter_0/s00_axi_aresetn] [get_bd_pins rst_clk_wiz_1_100M/peripheral_aresetn]
+  connect_bd_net -net rst_clk_wiz_1_100M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_uartlite_Storm32/s_axi_aresetn] [get_bd_pins axi_uartlite_usb/s_axi_aresetn] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/M03_ARESETN] [get_bd_pins microblaze_0_axi_periph/M04_ARESETN] [get_bd_pins microblaze_0_axi_periph/M05_ARESETN] [get_bd_pins microblaze_0_axi_periph/M06_ARESETN] [get_bd_pins microblaze_0_axi_periph/M07_ARESETN] [get_bd_pins microblaze_0_axi_periph/M08_ARESETN] [get_bd_pins microblaze_0_axi_periph/M09_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins pwm_interpreter_0/rst_l] [get_bd_pins pwm_interpreter_0/s00_axi_aresetn] [get_bd_pins pwm_interpreter_1/rst_l] [get_bd_pins pwm_interpreter_1/s00_axi_aresetn] [get_bd_pins pwm_interpreter_2/rst_l] [get_bd_pins pwm_interpreter_2/s00_axi_aresetn] [get_bd_pins pwm_interpreter_3/rst_l] [get_bd_pins pwm_interpreter_3/s00_axi_aresetn] [get_bd_pins pwm_interpreter_4/rst_l] [get_bd_pins pwm_interpreter_4/s00_axi_aresetn] [get_bd_pins pwm_interpreter_5/rst_l] [get_bd_pins pwm_interpreter_5/s00_axi_aresetn] [get_bd_pins rst_clk_wiz_1_100M/peripheral_aresetn]
   connect_bd_net -net stormUART_rxd_1 [get_bd_ports stormUART_rxd] [get_bd_pins axi_uartlite_Storm32/rx]
   connect_bd_net -net sw_1 [get_bd_ports sw] [get_bd_pins axi_gpio_0/gpio2_io_i]
   connect_bd_net -net sys_clk_1 [get_bd_ports sys_clk] [get_bd_pins clk_wiz_1/clk_in1]
   connect_bd_net -net sys_reset_1 [get_bd_ports sys_reset] [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
   connect_bd_net -net usb_uart_rxd_1 [get_bd_ports usb_uart_rxd] [get_bd_pins axi_uartlite_usb/rx]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins axi_intc_0/intr] [get_bd_pins xlconcat_0/dout]
+  connect_bd_net -net xlslice_0_Dout [get_bd_pins pwm_interpreter_0/pwm_in] [get_bd_pins xlslice_0/Dout]
+  connect_bd_net -net xlslice_1_Dout [get_bd_pins pwm_interpreter_1/pwm_in] [get_bd_pins xlslice_1/Dout]
+  connect_bd_net -net xlslice_2_Dout [get_bd_pins pwm_interpreter_2/pwm_in] [get_bd_pins xlslice_2/Dout]
+  connect_bd_net -net xlslice_3_Dout [get_bd_pins pwm_interpreter_3/pwm_in] [get_bd_pins xlslice_3/Dout]
+  connect_bd_net -net xlslice_4_Dout [get_bd_pins pwm_interpreter_4/pwm_in] [get_bd_pins xlslice_4/Dout]
+  connect_bd_net -net xlslice_5_Dout [get_bd_pins pwm_interpreter_5/pwm_in] [get_bd_pins xlslice_5/Dout]
 
   # Create address segments
   create_bd_addr_seg -range 0x00010000 -offset 0x40000000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
@@ -417,6 +501,11 @@ proc create_root_design { parentCell } {
   create_bd_addr_seg -range 0x00010000 -offset 0x00000000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] SEG_dlmb_bram_if_cntlr_Mem
   create_bd_addr_seg -range 0x00020000 -offset 0x00000000 [get_bd_addr_spaces microblaze_0/Instruction] [get_bd_addr_segs microblaze_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] SEG_ilmb_bram_if_cntlr_Mem
   create_bd_addr_seg -range 0x00010000 -offset 0x44A00000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs pwm_interpreter_0/S00_AXI/S00_AXI_reg] SEG_pwm_interpreter_0_S00_AXI_reg
+  create_bd_addr_seg -range 0x00010000 -offset 0x44A10000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs pwm_interpreter_1/S00_AXI/S00_AXI_reg] SEG_pwm_interpreter_1_S00_AXI_reg
+  create_bd_addr_seg -range 0x00010000 -offset 0x44A20000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs pwm_interpreter_2/S00_AXI/S00_AXI_reg] SEG_pwm_interpreter_2_S00_AXI_reg
+  create_bd_addr_seg -range 0x00010000 -offset 0x44A30000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs pwm_interpreter_3/S00_AXI/S00_AXI_reg] SEG_pwm_interpreter_3_S00_AXI_reg
+  create_bd_addr_seg -range 0x00010000 -offset 0x44A40000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs pwm_interpreter_4/S00_AXI/S00_AXI_reg] SEG_pwm_interpreter_4_S00_AXI_reg
+  create_bd_addr_seg -range 0x00010000 -offset 0x44A50000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs pwm_interpreter_5/S00_AXI/S00_AXI_reg] SEG_pwm_interpreter_5_S00_AXI_reg
 
 
   # Restore current instance
