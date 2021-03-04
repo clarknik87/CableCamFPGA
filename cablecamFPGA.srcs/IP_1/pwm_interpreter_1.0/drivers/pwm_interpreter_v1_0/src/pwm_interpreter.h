@@ -6,74 +6,53 @@
 /****************** Include Files ********************/
 #include "xil_types.h"
 #include "xstatus.h"
+#include "xil_io.h"
 
+/****************** Macro Definitions ****************/
 #define PWM_INTERPRETER_S00_AXI_SLV_REG0_OFFSET 0
 #define PWM_INTERPRETER_S00_AXI_SLV_REG1_OFFSET 4
 #define PWM_INTERPRETER_S00_AXI_SLV_REG2_OFFSET 8
 #define PWM_INTERPRETER_S00_AXI_SLV_REG3_OFFSET 12
 
+#define PWM_INTERPRETER_ENABLE_REG_OFFSET   PWM_INTERPRETER_S00_AXI_SLV_REG0_OFFSET
+#define PWM_INTERPRETER_DUTY_REG_OFFSET     PWM_INTERPRETER_S00_AXI_SLV_REG1_OFFSET
+#define PWM_INTERPRETER_PERIOD_REG_OFFSET   PWM_INTERPRETER_S00_AXI_SLV_REG2_OFFSET
+#define PWM_INTERPRETER_ID_REG_OFFSET       PWM_INTERPRETER_S00_AXI_SLV_REG3_OFFSET
 
-/**************************** Type Definitions *****************************/
-/**
- *
- * Write a value to a PWM_INTERPRETER register. A 32 bit write is performed.
- * If the component is implemented in a smaller width, only the least
- * significant data is written.
- *
- * @param   BaseAddress is the base address of the PWM_INTERPRETERdevice.
- * @param   RegOffset is the register offset from the base to write to.
- * @param   Data is the data written to the register.
- *
- * @return  None.
- *
- * @note
- * C-style signature:
- * 	void PWM_INTERPRETER_mWriteReg(u32 BaseAddress, unsigned RegOffset, u32 Data)
- *
- */
-#define PWM_INTERPRETER_mWriteReg(BaseAddress, RegOffset, Data) \
-  	Xil_Out32((BaseAddress) + (RegOffset), (u32)(Data))
+/**************************** Type Definitions *******************************/
 
-/**
- *
- * Read a value from a PWM_INTERPRETER register. A 32 bit read is performed.
- * If the component is implemented in a smaller width, only the least
- * significant data is read from the register. The most significant data
- * will be read as 0.
- *
- * @param   BaseAddress is the base address of the PWM_INTERPRETER device.
- * @param   RegOffset is the register offset from the base to write to.
- *
- * @return  Data is the data from the register.
- *
- * @note
- * C-style signature:
- * 	u32 PWM_INTERPRETER_mReadReg(u32 BaseAddress, unsigned RegOffset)
- *
- */
-#define PWM_INTERPRETER_mReadReg(BaseAddress, RegOffset) \
-    Xil_In32((BaseAddress) + (RegOffset))
+typedef struct
+{
+    UINTPTR             base_address;
+    int                 is_enabled;
+    int                 is_intrenabled;
+}PWMIntepreterDevice;
 
-/************************** Function Prototypes ****************************/
+
+/**************************** Function Definitions ***************************/
+
+
+/*****************************************************************************/
 /**
- *
- * Run a self-test on the driver/device. Note this may be a destructive test if
- * resets of the device are performed.
- *
- * If the hardware system is not built correctly, this function may never
- * return to the caller.
- *
- * @param   baseaddr_p is the base address of the PWM_INTERPRETER instance to be worked on.
- *
- * @return
- *
- *    - XST_SUCCESS   if all self-test code passed
- *    - XST_FAILURE   if any self-test code failed
- *
- * @note    Caching must be turned off for this function to work.
- * @note    Self test may fail if data memory and device are not on the same bus.
- *
- */
-XStatus PWM_INTERPRETER_Reg_SelfTest(void * baseaddr_p);
+*
+* @brief    Initialized a PWMInterpreterDevice structure to be used as an
+			interface by all other functions in this header file.
+*
+* @param	Pointer to a PWMInterpreterDevice struct to be initialized.
+* @param	Base address of the device retrieved from xparameters.h.
+*
+* @return	XST_SUCCESS or XST_FAILURE.
+*
+******************************************************************************/
+int PWMInterpreter_Init(PWMInterpretDevice *InstancePtr, UINTPTR baseaddress);  
+
+
+int PWMInterpreter_Enable(PWMInterpretDevice *);
+int PWMInterpreter_Disable(PWMInterpretDevice *);
+int PWMInterpreter_EnableInterrupt(PWMInterpretDevice *);
+int PWMInterpreter_DisableInterrupt(PWMInterpretDevice *);
+int PWMInterpreter_ReadDutyPeriod(PWMInterpretDevice *, uint32_t *);
+int PWMInterpreter_ReadPeriod(PWMInterpretDevice *, uint32_t *);
+int PWMInterpreter_ReadID(PWMInterpretDevice *, char* );
 
 #endif // PWM_INTERPRETER_H
