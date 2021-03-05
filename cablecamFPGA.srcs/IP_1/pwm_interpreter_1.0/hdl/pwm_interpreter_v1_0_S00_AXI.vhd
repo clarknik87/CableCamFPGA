@@ -108,6 +108,9 @@ architecture arch_imp of pwm_interpreter_v1_0_S00_AXI is
 	constant OPT_MEM_ADDR_BITS : integer := 1;
 	------------------------------------------------
 	---- Signals for user logic register space example
+	signal period_reg  : std_logic_vector(31 downto 0);
+	signal duty_reg    : std_logic_vector(31 downto 0);
+	signal id_reg      : std_logic_vector(31 downto 0);
 	--------------------------------------------------
 	---- Number of Slave Registers 4
 	signal slv_reg0	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
@@ -368,11 +371,11 @@ begin
 	      when b"00" =>
 	        reg_data_out <= slv_reg0;
 	      when b"01" =>
-	        reg_data_out <= slv_reg1;
+	        reg_data_out <= duty_reg;
 	      when b"10" =>
-	        reg_data_out <= slv_reg2;
+	        reg_data_out <= period_reg;
 	      when b"11" =>
-	        reg_data_out <= slv_reg3;
+	        reg_data_out <= id_reg;
 	      when others =>
 	        reg_data_out  <= (others => '0');
 	    end case;
@@ -404,12 +407,12 @@ begin
         rst_l       => rst_l,
         pwm_in      => pwm_in,
         enable_reg  => slv_reg0,
-        period_reg  => slv_reg2,
-        duty_reg    => slv_reg1,
+        period_reg  => period_reg,
+        duty_reg    => duty_reg,
         interrupt   => interrupt
     );
     
-    slv_reg3 <= std_logic_vector(to_unsigned( 5068624, slv_reg3'length)); -- "PWM\0" in ascii
+    id_reg <= std_logic_vector(to_unsigned( 5068624, slv_reg3'length)); -- "PWM\0" in ascii
 	-- User logic ends
 
 end arch_imp;

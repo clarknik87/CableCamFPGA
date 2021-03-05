@@ -57,7 +57,6 @@ architecture arch_imp of pwm_interpreter_v1_0 is
 		C_S_AXI_ADDR_WIDTH	: integer	:= 4
 		);
 		port (
-		clk         : in std_logic;
         rst_l       : in std_logic;
         pwm_in      : in std_logic;
         interrupt   : out std_logic;
