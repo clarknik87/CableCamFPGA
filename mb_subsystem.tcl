@@ -130,7 +130,7 @@ xilinx.com:ip:axi_uartlite:2.0\
 xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:mdm:3.2\
 xilinx.com:ip:microblaze:10.0\
-user.org:user:pwm_interpreter:1.0\
+user.org:user:pwm_interpreter:2.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:xlslice:1.0\
@@ -363,22 +363,22 @@ proc create_root_design { parentCell } {
   create_hier_cell_microblaze_0_local_memory [current_bd_instance .] microblaze_0_local_memory
 
   # Create instance: pwm_interpreter_0, and set properties
-  set pwm_interpreter_0 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_0 ]
+  set pwm_interpreter_0 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:2.0 pwm_interpreter_0 ]
 
   # Create instance: pwm_interpreter_1, and set properties
-  set pwm_interpreter_1 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_1 ]
+  set pwm_interpreter_1 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:2.0 pwm_interpreter_1 ]
 
   # Create instance: pwm_interpreter_2, and set properties
-  set pwm_interpreter_2 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_2 ]
+  set pwm_interpreter_2 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:2.0 pwm_interpreter_2 ]
 
   # Create instance: pwm_interpreter_3, and set properties
-  set pwm_interpreter_3 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_3 ]
+  set pwm_interpreter_3 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:2.0 pwm_interpreter_3 ]
 
   # Create instance: pwm_interpreter_4, and set properties
-  set pwm_interpreter_4 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_4 ]
+  set pwm_interpreter_4 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:2.0 pwm_interpreter_4 ]
 
   # Create instance: pwm_interpreter_5, and set properties
-  set pwm_interpreter_5 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:1.0 pwm_interpreter_5 ]
+  set pwm_interpreter_5 [ create_bd_cell -type ip -vlnv user.org:user:pwm_interpreter:2.0 pwm_interpreter_5 ]
 
   # Create instance: rst_clk_wiz_1_100M, and set properties
   set rst_clk_wiz_1_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_clk_wiz_1_100M ]

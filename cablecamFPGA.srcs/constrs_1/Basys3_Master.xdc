@@ -145,7 +145,7 @@ set_property PACKAGE_PIN H2 [get_ports {pwmin[5]}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {pwmin[5]}]
 ##Sch name = JA10
 set_property PACKAGE_PIN G3 [get_ports {stormUART_rxd}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {stromUART_rxd}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {stormUART_rxd}]
 
 
 

@@ -37,6 +37,7 @@ end pwm_read;
 
 architecture Behavioral of pwm_read is
 
+    signal pwm_in_delay     : std_logic;
     signal enable           : std_logic;
     signal int_enable       : std_logic;
 
@@ -108,12 +109,14 @@ begin
 
     update_reg : process(pwm_in, enable)
     begin
+        pwm_in_delay <= pwm_in;
+    
         if rst_l = '0' then
             duty_reg_buf    <= (others => '0');
             period_reg_buf  <= (others => '0');
         else
             if enable = '1' then
-                if rising_edge(pwm_in) then
+                if (pwm_in_delay /= pwm_in and pwm_in = '1') then
                     duty_reg_buf   <= std_logic_vector(duty_cnt);
                     period_reg_buf <= std_logic_vector(period_cnt);
                 else
