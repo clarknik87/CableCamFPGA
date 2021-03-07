@@ -31,18 +31,12 @@
 ******************************************************************************/
 
 /*
- * helloworld.c: simple test application
+ * main.cpp
  *
- * This application configures UART 16550 to baud rate 9600.
- * PS7 UART (Zynq) is not initialized by this application, since
- * bootrom/bsp configures it to baud rate 115200
- *
- * ------------------------------------------------
- * | UART TYPE   BAUD RATE                        |
- * ------------------------------------------------
- *   uartns550   9600
- *   uartlite    Configurable only in HW design
- *   ps7_uart    115200 (configured by bootrom/bsp)
+ * This is the entry point for the CableCam software system.
+ * This file acts essentially as a basic task scheduler by
+ * calling each task's initialization functions, followed by
+ * each task's loop (update) functions.
  */
 
 
@@ -51,41 +45,35 @@
 #include "xil_printf.h"
 //#include "microblaze_sleep.h"
 #include "xgpio.h"
-#include "xintc.h"
 #include "xil_exception.h"
 #include "xparameters.h"
 
 // Project Specific Includes
+#include "interrupt_ctrl.hpp"
 #include "gpio.hpp"
 #include "debug_uart.hpp"
 #include "storm_uart.hpp"
 #include "platform.h"
 
-int interrupt_init(XIntc &IntrController)
+
+static int taskInit(XIntc &mainIntrController)
 {
-	int status = XST_SUCCESS;
+    gpio::init();
+    interrupt::init(mainIntrController);
+    debug_uart::init();
+    storm_uart::init();
 
-	// Initialize Interrupt
-	status += XIntc_Initialize(&IntrController, XPAR_AXI_INTC_0_DEVICE_ID);
-	if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed to initialize interrupt controller\r\n");
-
-	status += XIntc_SelfTest(&IntrController);
-	if(status != XST_SUCCESS) xil_printf("<ERROR> = Failed interrupt controller self-test\r\n");
-
-	//Enable Exception Handler
-	Xil_ExceptionInit();
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XIntc_InterruptHandler, &IntrController);
-	Xil_ExceptionEnable();
-	return status;
+    return XST_SUCCESS;
 }
 
-int interrupt_start(XIntc &IntrController)
+static int taskConnect(XIntc &mainIntrController)
 {
-	//Allow interrupts
-	XIntc_Start(&IntrController, XIN_REAL_MODE);
+	gpio::interrupt_connect(mainIntrController);
+	debug_uart::interrupt_connect(mainIntrController);
+	storm_uart::interrupt_connect(mainIntrController);
+
 	return XST_SUCCESS;
 }
-
 
 int main()
 {
@@ -96,22 +84,18 @@ int main()
     xil_printf("<status> = System reset.\r\n");
 
     // Call task init() functions
-    gpio::init();
-    interrupt_init(mainIntrController);
-    debug_uart::init();
-    storm_uart::init();
+    taskInit(mainIntrController);
     xil_printf("<status> = Peripherals initialized\r\n");
 
     // Connect task interrupts
-    gpio::interrupt_connect(mainIntrController);
-    debug_uart::interrupt_connect(mainIntrController);
-    storm_uart::interrupt_connect(mainIntrController);
+    taskConnect(mainIntrController);
     xil_printf("<status> = Interrupts connected\r\n");
 
     // Start interrupt controller
-    interrupt_start(mainIntrController);
+    interrupt::start(mainIntrController);
     xil_printf("<status> = Started interrupt controller\r\n");
 
+    // Initialize Gimbal Control Module using storm_uart
     storm_uart::init_storm_parameters();
 
     while(true)

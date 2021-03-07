@@ -7,3 +7,6 @@ _project/
 **/Debug
 cablecamFPGA.sdk/.project
 **/standalone_bsp_0/microblaze_0/
+cablecamFPGA.sdk/top_level_hw_platform_0/drivers/
+cablecamFPGA.sdk/top_level_hw_platform_0/top_level.hdf
+cablecamFPGA.srcs/IP_1/pwm_interpreter_1.0/xgui/pwm_interpreter_v2_0.tcl
