@@ -23,7 +23,7 @@
 
 typedef struct
 {
-    UINTPTR             base_address;
+    UINTPTR             baseaddress;
     int                 is_enabled;
     int                 is_intrenabled;
 }PWMIntepreterDevice;
@@ -44,15 +44,15 @@ typedef struct
 * @return	XST_SUCCESS or XST_FAILURE.
 *
 ******************************************************************************/
-int PWMInterpreter_Init(PWMInterpretDevice *InstancePtr, UINTPTR baseaddress);  
+int PWMInterpreter_Init(PWMIntepreterDevice *InstancePtr, UINTPTR baseaddress);
 
 
-int PWMInterpreter_Enable(PWMInterpretDevice *);
-int PWMInterpreter_Disable(PWMInterpretDevice *);
-int PWMInterpreter_EnableInterrupt(PWMInterpretDevice *);
-int PWMInterpreter_DisableInterrupt(PWMInterpretDevice *);
-int PWMInterpreter_ReadDutyPeriod(PWMInterpretDevice *, uint32_t *);
-int PWMInterpreter_ReadPeriod(PWMInterpretDevice *, uint32_t *);
-int PWMInterpreter_ReadID(PWMInterpretDevice *, char* );
+int PWMInterpreter_Enable(PWMIntepreterDevice *);
+int PWMInterpreter_Disable(PWMIntepreterDevice *);
+int PWMInterpreter_EnableInterrupt(PWMIntepreterDevice *);
+int PWMInterpreter_DisableInterrupt(PWMIntepreterDevice *);
+int PWMInterpreter_ReadDutyPeriod(PWMIntepreterDevice *, uint32_t *);
+int PWMInterpreter_ReadPeriod(PWMIntepreterDevice *, uint32_t *);
+int PWMInterpreter_ReadID(PWMIntepreterDevice *, char* );
 
 #endif // PWM_INTERPRETER_H

@@ -24,7 +24,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -61,11 +61,14 @@ component mb_subsystem_wrapper is
   );
 end component;
 
+signal test_pwm : std_logic_vector(5 downto 0) := (others => '0');
+signal test_cnt : unsigned(31 downto 0) := (others => '0');
+
 begin
 
 microblaze_system : mb_subsystem_wrapper
 port map(
-    PWMin           => pwmin,
+    PWMin           => test_pwm,
     led             => led,
     sw              => sw,
     sys_clk         => clk,
@@ -76,5 +79,21 @@ port map(
     stormUART_txd   => stormUART_txd
 );
 
+process( clk) 
+begin
+    if rising_edge(clk) then
+        if test_cnt < 500000 then
+            test_cnt <= test_cnt + to_unsigned(1, 32);
+        else
+            test_cnt <= (others => '0');
+        end if;
+        
+        if test_cnt < 200000 then
+            test_pwm <= (others => '1');
+        else
+            test_pwm <= (others => '0');
+        end if;
+    end if;
+end process;
 
 end Behavioral;
