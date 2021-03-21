@@ -53,6 +53,7 @@
 #include "gpio.hpp"
 #include "debug_uart.hpp"
 #include "storm_uart.hpp"
+#include "user_ctrl.hpp"
 #include "platform.h"
 
 
@@ -96,7 +97,10 @@ int main()
     xil_printf("<status> = Started interrupt controller\r\n");
 
     // Initialize Gimbal Control Module using storm_uart
-    storm_uart::init_storm_parameters();
+    //storm_uart::init_storm_parameters();
+
+    user_ctrl::init();
+    user_ctrl::test();
 
     while(true)
     {

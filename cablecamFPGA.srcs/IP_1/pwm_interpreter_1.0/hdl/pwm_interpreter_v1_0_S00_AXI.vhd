@@ -16,9 +16,12 @@ entity pwm_interpreter_v1_0_S00_AXI is
 	);
 	port (
 		-- Users to add ports here
-        rst_l       : in std_logic;
         pwm_in      : in std_logic;
         interrupt   : out std_logic;
+        enable_raw  : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        period_raw  : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        duty_raw    : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        id_raw      : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -404,7 +407,7 @@ begin
     PWM : pwm_read
     port map(
         clk         => S_AXI_ACLK,
-        rst_l       => rst_l,
+        rst_l       => S_AXI_ARESETN,
         pwm_in      => pwm_in,
         enable_reg  => slv_reg0,
         period_reg  => period_reg,
@@ -413,6 +416,10 @@ begin
     );
     
     id_reg <= std_logic_vector(to_unsigned( 5068624, slv_reg3'length)); -- "PWM\0" in ascii
+    enable_raw  <= slv_reg0;
+    period_raw  <= period_reg;
+    duty_raw    <= duty_reg;
+    id_raw      <= id_reg;
 	-- User logic ends
 
 end arch_imp;

@@ -54,7 +54,6 @@ architecture Behavioral of pwm_read is
     signal int_state        : state_type;
     signal int_cnt          : unsigned(3 downto 0) := (others => '0');
     signal duty_reg_comp    : std_logic_vector(31 downto 0) := (others => '0');
-    signal period_reg_comp  : std_logic_vector(31 downto 0) := (others => '0');
     
 
 begin
@@ -107,25 +106,27 @@ begin
         end if;
     end process;
 
-    update_reg : process(pwm_in, enable)
+    update_reg : process(clk, rst_l, enable)
     begin
-        pwm_in_delay <= pwm_in;
-    
-        if rst_l = '0' then
-            duty_reg_buf    <= (others => '0');
-            period_reg_buf  <= (others => '0');
-        else
-            if enable = '1' then
-                if (pwm_in_delay /= pwm_in and pwm_in = '1') then
-                    duty_reg_buf   <= std_logic_vector(duty_cnt);
-                    period_reg_buf <= std_logic_vector(period_cnt);
+        if rising_edge(clk) then
+            if rst_l = '0' then
+                duty_reg_buf    <= (others => '0');
+                period_reg_buf  <= (others => '0');
+            else                
+                pwm_in_delay <= pwm_in;
+                            
+                if enable = '1' then
+                    if (pwm_in_delay /= pwm_in and pwm_in = '1') then
+                        duty_reg_buf   <= std_logic_vector(duty_cnt);
+                        period_reg_buf <= std_logic_vector(period_cnt);
+                    else
+                        duty_reg_buf   <= duty_reg_buf;
+                        period_reg_buf <= period_reg_buf;
+                    end if;
                 else
                     duty_reg_buf   <= duty_reg_buf;
                     period_reg_buf <= period_reg_buf;
                 end if;
-            else
-                duty_reg_buf   <= duty_reg_buf;
-                period_reg_buf <= period_reg_buf;
             end if;
         end if;
     end process;
@@ -135,7 +136,6 @@ begin
         if rising_edge(clk) then
         
             duty_reg_comp   <= duty_reg_buf;
-            period_reg_comp <= period_reg_comp;
         
             if (rst_l = '0' or int_enable = '0') then
                 interrupt   <= '0';

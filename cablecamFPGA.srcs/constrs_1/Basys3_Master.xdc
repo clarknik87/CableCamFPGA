@@ -108,10 +108,10 @@ set_property PACKAGE_PIN L1 [get_ports {led[15]}]
 
 
 ##Buttons
-set_property PACKAGE_PIN U18 [get_ports rst]						
-	set_property IOSTANDARD LVCMOS33 [get_ports rst]
-set_property PACKAGE_PIN T18 [get_ports pwm_in]						
-	set_property IOSTANDARD LVCMOS33 [get_ports pwm_in]
+set_property PACKAGE_PIN U18 [get_ports rst_l]						
+	set_property IOSTANDARD LVCMOS33 [get_ports rst_l]
+#set_property PACKAGE_PIN T18 [get_ports pwm_in]						
+#	set_property IOSTANDARD LVCMOS33 [get_ports pwm_in]
 #set_property PACKAGE_PIN W19 [get_ports btnL]						
 	#set_property IOSTANDARD LVCMOS33 [get_ports btnL]
 #set_property PACKAGE_PIN T17 [get_ports btnR]						
@@ -123,26 +123,26 @@ set_property PACKAGE_PIN T18 [get_ports pwm_in]
 
 ##Pmod Header JA
 ##Sch name = JA1
-set_property PACKAGE_PIN J1 [get_ports {pwmin[2]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {pwmin[2]}]
+set_property PACKAGE_PIN J1 [get_ports {PWMChannel[2]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[2]}]
 ##Sch name = JA2
-set_property PACKAGE_PIN L2 [get_ports {pwmin[1]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {pwmin[1]}]
+set_property PACKAGE_PIN L2 [get_ports {PWMChannel[1]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[1]}]
 #Sch name = JA3
-set_property PACKAGE_PIN J2 [get_ports {pwmin[0]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {pwmin[0]}]
+set_property PACKAGE_PIN J2 [get_ports {PWMChannel[0]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[0]}]
 #Sch name = JA4
 set_property PACKAGE_PIN G2 [get_ports {stormUART_txd}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {stormUART_txd}]
 ##Sch name = JA7
-set_property PACKAGE_PIN H1 [get_ports {pwmin[3]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {pwmin[3]}]
+set_property PACKAGE_PIN H1 [get_ports {PWMChannel[3]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[3]}]
 #Sch name = JA8
-set_property PACKAGE_PIN K2 [get_ports {pwmin[4]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {pwmin[4]}]
+set_property PACKAGE_PIN K2 [get_ports {PWMChannel[4]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[4]}]
 #Sch name = JA9
-set_property PACKAGE_PIN H2 [get_ports {pwmin[5]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {pwmin[5]}]
+set_property PACKAGE_PIN H2 [get_ports {PWMChannel[5]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[5]}]
 ##Sch name = JA10
 set_property PACKAGE_PIN G3 [get_ports {stormUART_rxd}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {stormUART_rxd}]

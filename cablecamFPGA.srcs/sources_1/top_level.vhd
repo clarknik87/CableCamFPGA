@@ -34,14 +34,14 @@ use IEEE.NUMERIC_STD.ALL;
 entity top_level is
     Port (
         clk             :   in  std_logic;
-        rst             :   in  std_logic;
+        rst_l           :   in  std_logic;
         sw              :   in  std_logic_vector(15 downto 0);
         led             :   out std_logic_vector(15 downto 0);
         usb_uart_rxd    :   in  std_logic;
         usb_uart_txd    :   out std_logic;
         stormUART_rxd   :   in  std_logic;
         stormUART_txd   :   out std_logic;
-        pwmin          :   in  std_logic_vector(5 downto 0)
+        PWMChannel      :   in  std_logic_vector(5 downto 0)
     );
 end top_level;
 
@@ -61,39 +61,45 @@ component mb_subsystem_wrapper is
   );
 end component;
 
-signal test_pwm : std_logic_vector(5 downto 0) := (others => '0');
-signal test_cnt : unsigned(31 downto 0) := (others => '0');
+component pwm_generate is
+    port(
+        clk     : in std_logic;
+        rst_l   : in std_logic;
+        pwm_out : out std_logic
+    );
+end component;
+
+signal pwm_out  : std_logic;
+signal pwm_in   : std_logic_vector(5 downto 0);
 
 begin
 
 microblaze_system : mb_subsystem_wrapper
 port map(
-    PWMin           => test_pwm,
+    PWMin           => pwm_in,
     led             => led,
     sw              => sw,
     sys_clk         => clk,
-    sys_reset       => rst,
+    sys_reset       => rst_l,
     usb_uart_rxd    => usb_uart_rxd,
     usb_uart_txd    => usb_uart_txd,
     stormUART_rxd   => stormUART_rxd,
     stormUART_txd   => stormUART_txd
 );
 
-process( clk) 
-begin
-    if rising_edge(clk) then
-        if test_cnt < 500000 then
-            test_cnt <= test_cnt + to_unsigned(1, 32);
-        else
-            test_cnt <= (others => '0');
-        end if;
-        
-        if test_cnt < 200000 then
-            test_pwm <= (others => '1');
-        else
-            test_pwm <= (others => '0');
-        end if;
-    end if;
-end process;
+pwm_create : pwm_generate
+port map(
+    clk     => clk,
+    rst_l   => '1',
+    pwm_out => pwm_out
+);
+
+--duplicate generated pwm signal
+pwm_in(0) <= pwm_out;
+pwm_in(1) <= pwm_out;
+pwm_in(2) <= pwm_out;
+pwm_in(3) <= pwm_out;
+pwm_in(4) <= pwm_out;
+pwm_in(5) <= pwm_out;
 
 end Behavioral;

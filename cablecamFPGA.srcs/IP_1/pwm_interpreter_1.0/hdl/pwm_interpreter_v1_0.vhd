@@ -16,9 +16,12 @@ entity pwm_interpreter_v1_0 is
 	);
 	port (
 		-- Users to add ports here
-        rst_l       : in std_logic;
         pwm_in      : in std_logic;
         interrupt   : out std_logic;
+        enable_raw  : out std_logic_vector(C_S00_AXI_DATA_WIDTH-1 downto 0);
+        period_raw  : out std_logic_vector(C_S00_AXI_DATA_WIDTH-1 downto 0);
+        duty_raw    : out std_logic_vector(C_S00_AXI_DATA_WIDTH-1 downto 0);
+        id_raw      : out std_logic_vector(C_S00_AXI_DATA_WIDTH-1 downto 0); 
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -57,9 +60,12 @@ architecture arch_imp of pwm_interpreter_v1_0 is
 		C_S_AXI_ADDR_WIDTH	: integer	:= 4
 		);
 		port (
-        rst_l       : in std_logic;
         pwm_in      : in std_logic;
         interrupt   : out std_logic;
+        enable_raw  : out std_logic_vector(C_S00_AXI_DATA_WIDTH-1 downto 0);
+        period_raw  : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        duty_raw    : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        id_raw      : out std_logic_vector(C_S00_AXI_DATA_WIDTH-1 downto 0);
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
 		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -93,9 +99,12 @@ pwm_interpreter_v1_0_S00_AXI_inst : pwm_interpreter_v1_0_S00_AXI
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)
 	port map (
-        rst_l           => rst_l,
         pwm_in          => pwm_in,
         interrupt       => interrupt,
+        enable_raw      => enable_raw,
+        period_raw      => period_raw,
+        duty_raw        => duty_raw,
+        id_raw          => id_raw,
 		S_AXI_ACLK	=> s00_axi_aclk,
 		S_AXI_ARESETN	=> s00_axi_aresetn,
 		S_AXI_AWADDR	=> s00_axi_awaddr,
