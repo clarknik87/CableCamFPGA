@@ -89,19 +89,3 @@ char* PWMInterpreter::ReadID()
 
 	return IDstr;
 }
-
-uint32_t PWMInterpreter::ReadRaw(int reg)
-{
-	uint32_t reg_val = 0;
-
-	if( reg >= 0 && reg < 4 )
-		reg_val = Xil_In32(baseaddress + reg*4);
-
-	return reg_val;
-}
-
-void PWMInterpreter::WriteRaw(int reg, uint32_t reg_val)
-{
-	if( reg >= 0 && reg < 4 )
-		Xil_Out32(baseaddress + reg*4, reg_val);
-}

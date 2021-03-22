@@ -128,7 +128,6 @@ xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:axi_intc:4.1\
 xilinx.com:ip:axi_uartlite:2.0\
 xilinx.com:ip:clk_wiz:6.0\
-xilinx.com:ip:ila:6.2\
 xilinx.com:ip:mdm:3.2\
 xilinx.com:ip:microblaze:10.0\
 user.org:user:pwm_interpreter:4.0\
@@ -341,19 +340,6 @@ proc create_root_design { parentCell } {
    CONFIG.USE_RESET {false} \
  ] $clk_wiz_1
 
-  # Create instance: ila_0, and set properties
-  set ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_0 ]
-  set_property -dict [ list \
-   CONFIG.C_DATA_DEPTH {4096} \
-   CONFIG.C_ENABLE_ILA_AXI_MON {false} \
-   CONFIG.C_MONITOR_TYPE {Native} \
-   CONFIG.C_NUM_OF_PROBES {7} \
-   CONFIG.C_PROBE3_WIDTH {32} \
-   CONFIG.C_PROBE4_WIDTH {32} \
-   CONFIG.C_PROBE5_WIDTH {32} \
-   CONFIG.C_PROBE6_WIDTH {32} \
- ] $ila_0
-
   # Create instance: mdm_1, and set properties
   set mdm_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mdm:3.2 mdm_1 ]
 
@@ -483,12 +469,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net axi_uartlite_Storm32_interrupt [get_bd_pins axi_uartlite_Storm32/interrupt] [get_bd_pins xlconcat_0/In2]
   connect_bd_net -net axi_uartlite_Storm32_tx [get_bd_ports stormUART_txd] [get_bd_pins axi_uartlite_Storm32/tx]
   connect_bd_net -net mdm_1_debug_sys_rst [get_bd_pins mdm_1/Debug_SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/mb_debug_sys_rst]
-  connect_bd_net -net microblaze_0_Clk [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_uartlite_Storm32/s_axi_aclk] [get_bd_pins axi_uartlite_usb/s_axi_aclk] [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins ila_0/clk] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/M09_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins pwm_interpreter_0/s00_axi_aclk] [get_bd_pins pwm_interpreter_1/s00_axi_aclk] [get_bd_pins pwm_interpreter_2/s00_axi_aclk] [get_bd_pins pwm_interpreter_3/s00_axi_aclk] [get_bd_pins pwm_interpreter_4/s00_axi_aclk] [get_bd_pins pwm_interpreter_5/s00_axi_aclk] [get_bd_pins rst_clk_wiz_1_100M/slowest_sync_clk]
-  connect_bd_net -net pwm_interpreter_0_duty_raw [get_bd_pins ila_0/probe4] [get_bd_pins pwm_interpreter_0/duty_raw]
-  connect_bd_net -net pwm_interpreter_0_enable_raw [get_bd_pins ila_0/probe3] [get_bd_pins pwm_interpreter_0/enable_raw]
-  connect_bd_net -net pwm_interpreter_0_id_raw [get_bd_pins ila_0/probe6] [get_bd_pins pwm_interpreter_0/id_raw]
-  connect_bd_net -net pwm_interpreter_0_interrupt [get_bd_pins ila_0/probe2] [get_bd_pins pwm_interpreter_0/interrupt] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net pwm_interpreter_0_period_raw [get_bd_pins ila_0/probe5] [get_bd_pins pwm_interpreter_0/period_raw]
+  connect_bd_net -net microblaze_0_Clk [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_uartlite_Storm32/s_axi_aclk] [get_bd_pins axi_uartlite_usb/s_axi_aclk] [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/M09_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins pwm_interpreter_0/s00_axi_aclk] [get_bd_pins pwm_interpreter_1/s00_axi_aclk] [get_bd_pins pwm_interpreter_2/s00_axi_aclk] [get_bd_pins pwm_interpreter_3/s00_axi_aclk] [get_bd_pins pwm_interpreter_4/s00_axi_aclk] [get_bd_pins pwm_interpreter_5/s00_axi_aclk] [get_bd_pins rst_clk_wiz_1_100M/slowest_sync_clk]
+  connect_bd_net -net pwm_interpreter_0_interrupt [get_bd_pins pwm_interpreter_0/interrupt] [get_bd_pins xlconcat_0/In3]
   connect_bd_net -net pwm_interpreter_1_interrupt [get_bd_pins pwm_interpreter_1/interrupt] [get_bd_pins xlconcat_0/In4]
   connect_bd_net -net pwm_interpreter_2_interrupt [get_bd_pins pwm_interpreter_2/interrupt] [get_bd_pins xlconcat_0/In5]
   connect_bd_net -net pwm_interpreter_3_interrupt [get_bd_pins pwm_interpreter_3/interrupt] [get_bd_pins xlconcat_0/In6]
@@ -497,14 +479,14 @@ proc create_root_design { parentCell } {
   connect_bd_net -net rst_clk_wiz_1_100M_bus_struct_reset [get_bd_pins microblaze_0_local_memory/SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/bus_struct_reset]
   connect_bd_net -net rst_clk_wiz_1_100M_interconnect_aresetn [get_bd_pins microblaze_0_axi_periph/ARESETN] [get_bd_pins rst_clk_wiz_1_100M/interconnect_aresetn]
   connect_bd_net -net rst_clk_wiz_1_100M_mb_reset [get_bd_pins microblaze_0/Reset] [get_bd_pins rst_clk_wiz_1_100M/mb_reset]
-  connect_bd_net -net rst_clk_wiz_1_100M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_uartlite_Storm32/s_axi_aresetn] [get_bd_pins axi_uartlite_usb/s_axi_aresetn] [get_bd_pins ila_0/probe1] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/M03_ARESETN] [get_bd_pins microblaze_0_axi_periph/M04_ARESETN] [get_bd_pins microblaze_0_axi_periph/M05_ARESETN] [get_bd_pins microblaze_0_axi_periph/M06_ARESETN] [get_bd_pins microblaze_0_axi_periph/M07_ARESETN] [get_bd_pins microblaze_0_axi_periph/M08_ARESETN] [get_bd_pins microblaze_0_axi_periph/M09_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins pwm_interpreter_0/s00_axi_aresetn] [get_bd_pins pwm_interpreter_1/s00_axi_aresetn] [get_bd_pins pwm_interpreter_2/s00_axi_aresetn] [get_bd_pins pwm_interpreter_3/s00_axi_aresetn] [get_bd_pins pwm_interpreter_4/s00_axi_aresetn] [get_bd_pins pwm_interpreter_5/s00_axi_aresetn] [get_bd_pins rst_clk_wiz_1_100M/peripheral_aresetn]
+  connect_bd_net -net rst_clk_wiz_1_100M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_uartlite_Storm32/s_axi_aresetn] [get_bd_pins axi_uartlite_usb/s_axi_aresetn] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/M03_ARESETN] [get_bd_pins microblaze_0_axi_periph/M04_ARESETN] [get_bd_pins microblaze_0_axi_periph/M05_ARESETN] [get_bd_pins microblaze_0_axi_periph/M06_ARESETN] [get_bd_pins microblaze_0_axi_periph/M07_ARESETN] [get_bd_pins microblaze_0_axi_periph/M08_ARESETN] [get_bd_pins microblaze_0_axi_periph/M09_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins pwm_interpreter_0/s00_axi_aresetn] [get_bd_pins pwm_interpreter_1/s00_axi_aresetn] [get_bd_pins pwm_interpreter_2/s00_axi_aresetn] [get_bd_pins pwm_interpreter_3/s00_axi_aresetn] [get_bd_pins pwm_interpreter_4/s00_axi_aresetn] [get_bd_pins pwm_interpreter_5/s00_axi_aresetn] [get_bd_pins rst_clk_wiz_1_100M/peripheral_aresetn]
   connect_bd_net -net stormUART_rxd_1 [get_bd_ports stormUART_rxd] [get_bd_pins axi_uartlite_Storm32/rx]
   connect_bd_net -net sw_1 [get_bd_ports sw] [get_bd_pins axi_gpio_0/gpio2_io_i]
   connect_bd_net -net sys_clk_1 [get_bd_ports sys_clk] [get_bd_pins clk_wiz_1/clk_in1]
   connect_bd_net -net sys_reset_1 [get_bd_ports sys_reset] [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
   connect_bd_net -net usb_uart_rxd_1 [get_bd_ports usb_uart_rxd] [get_bd_pins axi_uartlite_usb/rx]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins axi_intc_0/intr] [get_bd_pins xlconcat_0/dout]
-  connect_bd_net -net xlslice_0_Dout [get_bd_pins ila_0/probe0] [get_bd_pins pwm_interpreter_0/pwm_in] [get_bd_pins xlslice_0/Dout]
+  connect_bd_net -net xlslice_0_Dout [get_bd_pins pwm_interpreter_0/pwm_in] [get_bd_pins xlslice_0/Dout]
   connect_bd_net -net xlslice_1_Dout [get_bd_pins pwm_interpreter_1/pwm_in] [get_bd_pins xlslice_1/Dout]
   connect_bd_net -net xlslice_2_Dout [get_bd_pins pwm_interpreter_2/pwm_in] [get_bd_pins xlslice_2/Dout]
   connect_bd_net -net xlslice_3_Dout [get_bd_pins pwm_interpreter_3/pwm_in] [get_bd_pins xlslice_3/Dout]

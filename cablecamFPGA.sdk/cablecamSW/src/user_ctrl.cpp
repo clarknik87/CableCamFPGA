@@ -17,27 +17,30 @@ namespace user_ctrl
 {
 	static PWMInterpreter channel1(XPAR_PWM_INTERPRETER_0_S00_AXI_BASEADDR);
 
+	void handler(void * callback)
+	{
+		xil_printf("In user_cntrl handler\r\n");
+	}
+
 	int init()
 	{
-		xil_printf("raw reg0 value = %u\r\n", channel1.ReadRaw(0));
 		channel1.Enable();
 		channel1.EnableInterrupt();
-		xil_printf("raw reg0 value = %u\r\n", channel1.ReadRaw(0));
-		xil_printf("raw reg0 value = %u\r\n", channel1.ReadRaw(3));
+
+		xil_printf("Channel1 ID = %s\r\n", channel1.ReadID());
+		xil_printf("Channel1 Period = %u\r\n", channel1.ReadPeriod());
+		xil_printf("Channel1 Duty = %u\r\n", channel1.ReadDutyPeriod());
 
 		return XST_SUCCESS;
 	}
 
-	void test()
+	int interrupt_connect(XIntc &IntrController)
 	{
-		auto print_reg = [&](int reg){xil_printf("channel1 reg%d = %u\r\n", reg, channel1.ReadRaw(reg));};
+		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, NULL);
 
-		xil_printf("channel1 ID = %s\r\n", channel1.ReadID());
-		xil_printf("channel1 period = %u\r\n", channel1.ReadPeriod());
-		print_reg(0);
-		print_reg(1);
-		print_reg(2);
-		print_reg(3);
+		XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID);
+
+		return XST_SUCCESS;
 	}
 }
 

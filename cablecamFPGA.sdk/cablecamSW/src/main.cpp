@@ -63,6 +63,7 @@ static int taskInit(XIntc &mainIntrController)
     interrupt::init(mainIntrController);
     debug_uart::init();
     storm_uart::init();
+    user_ctrl::init();
 
     return XST_SUCCESS;
 }
@@ -72,6 +73,7 @@ static int taskConnect(XIntc &mainIntrController)
 	gpio::interrupt_connect(mainIntrController);
 	debug_uart::interrupt_connect(mainIntrController);
 	storm_uart::interrupt_connect(mainIntrController);
+	user_ctrl::interrupt_connect(mainIntrController);
 
 	return XST_SUCCESS;
 }
@@ -98,9 +100,6 @@ int main()
 
     // Initialize Gimbal Control Module using storm_uart
     //storm_uart::init_storm_parameters();
-
-    user_ctrl::init();
-    user_ctrl::test();
 
     while(true)
     {

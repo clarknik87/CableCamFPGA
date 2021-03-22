@@ -32,8 +32,6 @@ public:
 	uint32_t ReadDutyPeriod();
 	uint32_t ReadPeriod();
 	char* 	 ReadID();
-	uint32_t ReadRaw(int reg);
-	void 	 WriteRaw(int reg, uint32_t reg_val);
 };
 
 #endif /* SRC_DRIVERS_PWM_INTERPRETER_HPP_ */

@@ -8,10 +8,12 @@
 #ifndef SRC_USER_CTRL_HPP_
 #define SRC_USER_CTRL_HPP_
 
+#include "xintc.h"
+
 namespace user_ctrl
 {
 	int init();
-	void test();
+	int interrupt_connect(XIntc &IntrController);
 }
 
 
