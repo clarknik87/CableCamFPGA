@@ -50,6 +50,7 @@ architecture Behavioral of top_level is
 component mb_subsystem_wrapper is
   port (
     PWMin : in STD_LOGIC_VECTOR ( 5 downto 0 );
+    drive_motor_pwm : out STD_LOGIC;
     led : out STD_LOGIC_VECTOR ( 15 downto 0 );
     stormUART_rxd : in STD_LOGIC;
     stormUART_txd : out STD_LOGIC;
@@ -77,6 +78,7 @@ begin
 microblaze_system : mb_subsystem_wrapper
 port map(
     PWMin           => pwm_in,
+    drive_motor_pwm => open,
     led             => led,
     sw              => sw,
     sys_clk         => clk,

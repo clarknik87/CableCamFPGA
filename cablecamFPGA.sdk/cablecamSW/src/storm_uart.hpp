@@ -16,7 +16,7 @@ namespace storm_uart
 
 	int init();
 	int interrupt_connect(XIntc &IntrController);
-	int init_storm_parameters();
+	int start_gimbal_control();
 	void update();
 
 	int send(uint8_t *buffer, int length);

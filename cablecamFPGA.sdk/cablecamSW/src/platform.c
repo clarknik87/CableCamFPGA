@@ -86,8 +86,12 @@ init_uart()
     /* Bootrom/BSP configures PS7/PSU UART to 115200 bps */
 }
 
-void
-init_platform()
+void cleanup_platform()
+{
+    disable_caches();
+}
+
+void init_platform()
 {
     /*
      * If you want to run this example outside of SDK,
@@ -98,12 +102,9 @@ init_platform()
      */
     /* ps7_init();*/
     /* psu_init();*/
+	cleanup_platform();
     enable_caches();
     init_uart();
 }
 
-void
-cleanup_platform()
-{
-    disable_caches();
-}
+

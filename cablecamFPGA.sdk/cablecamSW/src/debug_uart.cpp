@@ -14,7 +14,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-constexpr int buffer_size{64};
+constexpr int buffer_size{72};
 static uint8_t sendBuffer[buffer_size];
 static uint8_t recvBuffer[buffer_size];
 static volatile int recv_length;

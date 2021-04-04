@@ -25,7 +25,7 @@ namespace user_ctrl
 	int init()
 	{
 		channel1.Enable();
-		channel1.EnableInterrupt();
+		//channel1.EnableInterrupt();
 
 		xil_printf("Channel1 ID = %s\r\n", channel1.ReadID());
 		xil_printf("Channel1 Period = %u\r\n", channel1.ReadPeriod());

@@ -16,8 +16,9 @@
 
 #include "packets/version.hpp"
 #include "packets/parameter.hpp"
+#include "packets/data.hpp"
 
-constexpr int buffer_size{64};
+constexpr int buffer_size{72};
 static uint8_t sendBuffer[buffer_size];
 static uint8_t recvBuffer[buffer_size];
 static volatile int recv_length;
@@ -76,6 +77,17 @@ static void RecvHandler(void *CallBackRef, unsigned int EventData)
 
 namespace storm_uart
 {
+
+	//Gimbal Controler States
+	constexpr uint16_t state_srtMOTOR 	= 0x0;
+	constexpr uint16_t state_SETTLE 	= 0x1;
+	constexpr uint16_t state_CALIBRATE	= 0x2;
+	constexpr uint16_t state_LEVEL		= 0x3;
+	constexpr uint16_t state_AUTODIR	= 0x4;
+	constexpr uint16_t state_RELEVEL	= 0x5;
+	constexpr uint16_t state_NORMAL		= 0x6;
+	constexpr uint16_t state_FASTLEVEL	= 0x7;
+
 	int init()
 	{
 		int status = XST_SUCCESS;
@@ -107,8 +119,9 @@ namespace storm_uart
 		return status;
 	}
 
-	int init_storm_parameters()
+	bool getVersion()
 	{
+		// Get the version of the board (mostly just a connection check)
 		VersionPkt::request  vrqpkt;
 		VersionPkt::response vrspkt;
 		if(sendreceive(vrqpkt.raw, sizeof(vrqpkt.pkt), vrspkt.raw, sizeof(vrspkt.pkt)) == XST_SUCCESS)
@@ -118,6 +131,7 @@ namespace storm_uart
 				xil_printf("<INFO> = Firmware Version:   %d\r\n", vrspkt.pkt.fwversion);
 				xil_printf("<INFO> = Layout Version:     %d\r\n", vrspkt.pkt.layoutversion);
 				xil_printf("<INFO> = Board Capabilities: %d\r\n", vrspkt.pkt.boardcapabilities);
+				return true;
 			}
 			else
 			{
@@ -128,33 +142,91 @@ namespace storm_uart
 		{
 			xil_printf("<ERROR> = Unable to retrieve version data\r\n");
 		}
+		return false;
+	}
 
+	bool SetParam(uint16_t paramnum, uint16_t paramval)
+	{
 		SetParameterPkt::request  sprqpkt;
 		SetParameterPkt::response sprspkt;
-		auto SetParam = [&sprqpkt, &sprspkt](int paramnum, int paramval){
-			sprqpkt.pkt.paramnum = paramnum;
-			sprqpkt.pkt.paramval = paramval;
-			int status = sendreceive(sprqpkt.raw, sizeof(sprqpkt.pkt), sprspkt.raw, sizeof(sprspkt.pkt));
-			if(status == XST_SUCCESS)
-			{
-				if(sprspkt.check_crc())
-				{
-					xil_printf("<INFO> = parameter %d = %d\r\n", paramnum, paramval);
-				}
-				else
-				{
-					xil_printf("<ERROR> = Invalid set parameter packet received\r\n");
-				}
-			}
-			else
-			{
-				xil_printf("<ERROR> = set parameter packet failed\r\n");
-			}
-		};
 
-		SetParam(ParameterConst::pitchP, 500);
-		SetParam(ParameterConst::pitchI, 3000);
-		SetParam(ParameterConst::pitchD, 300);
+		sprqpkt.pkt.paramnum = paramnum;
+		sprqpkt.pkt.paramval = paramval;
+		int status = sendreceive(sprqpkt.raw, sizeof(sprqpkt.pkt), sprspkt.raw, sizeof(sprspkt.pkt));
+		if(status == XST_SUCCESS)
+		{
+			if(sprspkt.check_crc())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool GetState(GetDataPkt::response &gimbalData)
+	{
+		GetDataPkt::request  gdrqpkt;
+		int status = sendreceive(gdrqpkt.raw, sizeof(gdrqpkt.pkt), gimbalData.raw, sizeof(gimbalData.pkt));
+		if(status == XST_SUCCESS && gimbalData.check_crc())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool disableMotors()
+	{
+		bool status1 = SetParam(78, 3);
+		bool status2 = SetParam(79, 3);
+		bool status3 = SetParam(80, 3);
+
+		return (status1 && status2 && status3);
+	}
+
+	bool enableMotors()
+	{
+		bool status1 = SetParam(78, 0);
+		bool status2 = SetParam(79, 0);
+		bool status3 = SetParam(80, 0);
+
+		return (status1 && status2 && status3);
+	}
+
+	void restartController()
+	{
+		uint8_t command[2] = {'x','x'};
+		send(command, sizeof(command));
+		while(!send_complete)
+		{
+		}
+		return;
+	}
+
+	void waitUntilReady()
+	{
+		GetDataPkt::response gimbalData;
+		bool gimbalReady = false;
+		while( !gimbalReady )
+		{
+			if( GetState(gimbalData) )
+			{
+				if( gimbalData.pkt.state == state_NORMAL && gimbalData.pkt.lipo_voltage > 9000 )
+					gimbalReady = true;
+			}
+		}
+	}
+
+	int start_gimbal_control()
+	{
+		if( !getVersion() )
+			return XST_DEVICE_NOT_FOUND;
+
+		disableMotors();
+		//Set any parameters (most should be saved into controller flash)
+		enableMotors();
+		restartController();
+
+		waitUntilReady();
 
 		return XST_SUCCESS;
 	}

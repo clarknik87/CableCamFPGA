@@ -99,7 +99,7 @@ int main()
     xil_printf("<status> = Started interrupt controller\r\n");
 
     // Initialize Gimbal Control Module using storm_uart
-    //storm_uart::init_storm_parameters();
+    storm_uart::start_gimbal_control();
 
     while(true)
     {
