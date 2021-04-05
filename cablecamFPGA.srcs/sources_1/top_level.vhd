@@ -77,7 +77,7 @@ begin
 
 microblaze_system : mb_subsystem_wrapper
 port map(
-    PWMin           => pwm_in,
+    PWMin           => PWMChannel,
     drive_motor_pwm => open,
     led             => led,
     sw              => sw,
@@ -97,11 +97,11 @@ port map(
 );
 
 --duplicate generated pwm signal
-pwm_in(0) <= pwm_out;
-pwm_in(1) <= pwm_out;
-pwm_in(2) <= pwm_out;
-pwm_in(3) <= pwm_out;
-pwm_in(4) <= pwm_out;
-pwm_in(5) <= pwm_out;
+--pwm_in(0) <= pwm_out;
+--pwm_in(1) <= pwm_out;
+--pwm_in(2) <= pwm_out;
+--pwm_in(3) <= pwm_out;
+--pwm_in(4) <= pwm_out;
+--pwm_in(5) <= pwm_out;
 
 end Behavioral;

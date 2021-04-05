@@ -43,18 +43,20 @@
 // Xilinx/Standard Library Includes
 #include <stdio.h>
 #include "xil_printf.h"
-//#include "microblaze_sleep.h"
+#include "microblaze_sleep.h"
 #include "xgpio.h"
 #include "xil_exception.h"
 #include "xparameters.h"
 
 // Project Specific Includes
 #include "interrupt_ctrl.hpp"
+#include "controller_state.hpp"
 #include "gpio.hpp"
 #include "debug_uart.hpp"
 #include "storm_uart.hpp"
 #include "user_ctrl.hpp"
 #include "platform.h"
+
 
 
 static int taskInit(XIntc &mainIntrController)
@@ -68,12 +70,12 @@ static int taskInit(XIntc &mainIntrController)
     return XST_SUCCESS;
 }
 
-static int taskConnect(XIntc &mainIntrController)
+static int taskConnect(XIntc &mainIntrController, HandController &userInput)
 {
 	gpio::interrupt_connect(mainIntrController);
 	debug_uart::interrupt_connect(mainIntrController);
 	storm_uart::interrupt_connect(mainIntrController);
-	user_ctrl::interrupt_connect(mainIntrController);
+	user_ctrl::interrupt_connect(mainIntrController, userInput);
 
 	return XST_SUCCESS;
 }
@@ -81,6 +83,7 @@ static int taskConnect(XIntc &mainIntrController)
 int main()
 {
 	XIntc mainIntrController;
+	HandController userInput;
 
 	// Initialize platform
     init_platform();
@@ -91,7 +94,7 @@ int main()
     xil_printf("<status> = Peripherals initialized\r\n");
 
     // Connect task interrupts
-    taskConnect(mainIntrController);
+    taskConnect(mainIntrController, userInput);
     xil_printf("<status> = Interrupts connected\r\n");
 
     // Start interrupt controller
@@ -103,8 +106,9 @@ int main()
 
     while(true)
     {
+    	user_ctrl::update_controller_state(userInput);
     	debug_uart::update();
-    	storm_uart::update();
+    	storm_uart::update(userInput);
     }
 
     cleanup_platform();

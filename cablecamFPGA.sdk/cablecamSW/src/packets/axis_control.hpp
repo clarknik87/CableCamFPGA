@@ -2,11 +2,13 @@
  * axis_control.hpp
  *
  *  Created on: Feb 15, 2021
- *      Author: ecestudent
+ *      Author: Nik Clark
  */
 
 #ifndef SRC_PACKETS_AXIS_CONTROL_HPP_
 #define SRC_PACKETS_AXIS_CONTROL_HPP_
+
+#include "packet_utils.hpp"
 
 namespace setpitch
 {

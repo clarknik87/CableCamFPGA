@@ -13,10 +13,12 @@
 #include "xil_printf.h"
 #include <cstdint>
 #include <cstdlib>
+#include "sleep.h"
 
 #include "packets/version.hpp"
 #include "packets/parameter.hpp"
 #include "packets/data.hpp"
+#include "packets/axis_control.hpp"
 
 constexpr int buffer_size{72};
 static uint8_t sendBuffer[buffer_size];
@@ -195,7 +197,7 @@ namespace storm_uart
 	void restartController()
 	{
 		uint8_t command[2] = {'x','x'};
-		send(command, sizeof(command));
+		sendwait(command, sizeof(command));
 		while(!send_complete)
 		{
 		}
@@ -225,20 +227,39 @@ namespace storm_uart
 		//Set any parameters (most should be saved into controller flash)
 		enableMotors();
 		restartController();
-
+		sleep(2);
 		waitUntilReady();
 
 		return XST_SUCCESS;
 	}
 
-	void update()
+	void update(HandController &userInput)
 	{
+		// If any packets have been sent by the gimbal controller,
+		// forward them onto the user
 		if(update_required)
 		{
 			update_required = false;
 
 			// Send received packet through debug_uart
 			debug_uart::send(recvBuffer, recv_length);
+		}
+
+		//Set Yaw direction
+		setyaw::request yawpkt;
+		setyaw::response ackpkt;
+		if( userInput.cameraYaw/100 >= 1000 && userInput.cameraYaw/100 <= 2000 )
+		{
+			yawpkt.pkt.yawvalue = 3000 - userInput.cameraYaw/100; //This formula reverses the axis
+			sendreceive(yawpkt.raw, sizeof(yawpkt.raw), ackpkt.raw, sizeof(ackpkt.raw));
+		}
+
+		//Set Pitch direction
+		setpitch::request pitchpkt;
+		if( userInput.cameraPitch/100 >= 1000 && userInput.cameraPitch/100 <= 2000 )
+		{
+			pitchpkt.pkt.pitchvalue = userInput.cameraPitch/100;
+			sendreceive(yawpkt.raw, sizeof(yawpkt.raw), ackpkt.raw, sizeof(ackpkt.raw));
 		}
 	}
 
@@ -263,6 +284,16 @@ namespace storm_uart
 		XUartLite_Send(&uartDevice, buffer, length);
 
 		return XST_SUCCESS;
+	}
+
+	int sendwait(uint8_t *buffer, int length)
+	{
+		int status = XST_SUCCESS;
+		status = send(buffer, length);
+		while(!send_complete)
+		{
+		}
+		return status;
 	}
 
 	int sendreceive(uint8_t *p_sendbuf, int p_sendlength, uint8_t *p_recvbuf, int p_recvlength)

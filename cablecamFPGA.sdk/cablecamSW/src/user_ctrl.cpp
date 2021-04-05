@@ -16,31 +16,60 @@
 namespace user_ctrl
 {
 	static PWMInterpreter channel1(XPAR_PWM_INTERPRETER_0_S00_AXI_BASEADDR);
+	static PWMInterpreter channel2(XPAR_PWM_INTERPRETER_1_S00_AXI_BASEADDR);
+	static PWMInterpreter channel4(XPAR_PWM_INTERPRETER_3_S00_AXI_BASEADDR);
+	static PWMInterpreter channel5(XPAR_PWM_INTERPRETER_4_S00_AXI_BASEADDR);
+	static PWMInterpreter channel6(XPAR_PWM_INTERPRETER_5_S00_AXI_BASEADDR);
 
 	void handler(void * callback)
 	{
-		xil_printf("In user_cntrl handler\r\n");
+		HandController *userInput = (HandController *)callback;
+		update_controller_state(*userInput);
 	}
 
 	int init()
 	{
 		channel1.Enable();
-		//channel1.EnableInterrupt();
+		channel2.Enable();
+		channel4.Enable();
+		channel5.Enable();
+		channel6.Enable();
 
-		xil_printf("Channel1 ID = %s\r\n", channel1.ReadID());
-		xil_printf("Channel1 Period = %u\r\n", channel1.ReadPeriod());
-		xil_printf("Channel1 Duty = %u\r\n", channel1.ReadDutyPeriod());
+		//channel1.EnableInterrupt();
+		//channel2.EnableInterrupt();
+		//channel4.EnableInterrupt();
+		//channel5.EnableInterrupt();
+		//channel6.EnableInterrupt();
 
 		return XST_SUCCESS;
 	}
 
-	int interrupt_connect(XIntc &IntrController)
+	int interrupt_connect(XIntc &IntrController, HandController &userInput)
 	{
-		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, NULL);
+		//Connect all input channels to the handler.
+		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_1_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_3_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_4_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_5_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
 
-		XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID);
+		//Enable all channels in the interrupt vector table
+		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID);
+		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_1_VEC_ID);
+		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_3_VEC_ID);
+		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_4_VEC_ID);
+		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_5_VEC_ID);
 
 		return XST_SUCCESS;
+	}
+
+	void update_controller_state(HandController &userInput)
+	{
+		userInput.cameraYaw		 = channel1.ReadDutyPeriod();
+		userInput.cameraPitch	 = channel2.ReadDutyPeriod();
+		userInput.driveMotor 	 = channel4.ReadDutyPeriod();
+		userInput.endpointSwitch = channel5.ReadDutyPeriod();
+		userInput.controlSwitch  = channel6.ReadDutyPeriod();
 	}
 }
 
