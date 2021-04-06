@@ -65,11 +65,11 @@ namespace user_ctrl
 
 	void update_controller_state(HandController &userInput)
 	{
-		userInput.cameraYaw		 = channel1.ReadDutyPeriod();
-		userInput.cameraPitch	 = channel2.ReadDutyPeriod();
-		userInput.driveMotor 	 = channel4.ReadDutyPeriod();
-		userInput.endpointSwitch = channel5.ReadDutyPeriod();
-		userInput.controlSwitch  = channel6.ReadDutyPeriod();
+		userInput.setYaw(channel1.ReadDutyPeriod());
+		userInput.setPitch(channel2.ReadDutyPeriod());
+		userInput.setDriveMotor(channel4.ReadDutyPeriod());
+		userInput.setEndpointSwitch(channel5.ReadDutyPeriod());
+		userInput.setControlSwitch(channel6.ReadDutyPeriod());
 	}
 }
 

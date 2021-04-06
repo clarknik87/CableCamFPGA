@@ -68,6 +68,11 @@ namespace GetParameterPkt
 			pkt.data		= 0x00;
 			pkt.crc 		= packet_utils::crc_calculate(&raw[1], sizeof(pkt)-3);
 		}
+
+		void updateCRC()
+		{
+			pkt.crc 		= packet_utils::crc_calculate(&raw[1], sizeof(pkt)-3);
+		}
 	};
 
 	union response

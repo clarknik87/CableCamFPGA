@@ -106,4 +106,46 @@ namespace setyaw
 
 }
 
+namespace setPitchRollYaw
+{
+
+	union request
+	{
+#pragma pack(1)
+		struct Packet
+		{
+			uint8_t 	startsign;
+			uint8_t 	length;
+			uint8_t 	command;
+			uint16_t	pitchvalue;
+			uint16_t	rollvalue;
+			uint16_t	yawvalue;
+			uint16_t	crc;
+		}pkt;
+		uint8_t raw[sizeof(pkt)];
+#pragma pack()
+
+		request()
+		{
+			pkt.startsign	= 0xFA;
+			pkt.length 		= 0x06;
+			pkt.command		= 0x12;
+			pkt.pitchvalue	= 0x00;
+			pkt.rollvalue	= 0x00;
+			pkt.yawvalue	= 0x00;
+			pkt.crc 		= packet_utils::crc_calculate(&raw[1], sizeof(pkt)-3);
+		}
+
+		void updateCRC()
+		{
+			pkt.crc 		= packet_utils::crc_calculate(&raw[1], sizeof(pkt)-3);
+		}
+	};
+
+
+	typedef acknowledgePkt::response response;
+
+}
+
+
 #endif /* SRC_PACKETS_AXIS_CONTROL_HPP_ */

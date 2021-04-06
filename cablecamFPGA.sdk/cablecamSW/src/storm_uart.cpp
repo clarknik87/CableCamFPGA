@@ -245,22 +245,13 @@ namespace storm_uart
 			debug_uart::send(recvBuffer, recv_length);
 		}
 
-		//Set Yaw direction
-		setyaw::request yawpkt;
-		setyaw::response ackpkt;
-		if( userInput.cameraYaw/100 >= 1000 && userInput.cameraYaw/100 <= 2000 )
-		{
-			yawpkt.pkt.yawvalue = 3000 - userInput.cameraYaw/100; //This formula reverses the axis
-			sendreceive(yawpkt.raw, sizeof(yawpkt.raw), ackpkt.raw, sizeof(ackpkt.raw));
-		}
-
-		//Set Pitch direction
-		setpitch::request pitchpkt;
-		if( userInput.cameraPitch/100 >= 1000 && userInput.cameraPitch/100 <= 2000 )
-		{
-			pitchpkt.pkt.pitchvalue = userInput.cameraPitch/100;
-			sendreceive(yawpkt.raw, sizeof(yawpkt.raw), ackpkt.raw, sizeof(ackpkt.raw));
-		}
+		//Set gimbal direction
+		setPitchRollYaw::request  dirpkt;
+		setPitchRollYaw::response ackpkt;
+		dirpkt.pkt.pitchvalue = userInput.getPitch();
+		dirpkt.pkt.yawvalue   = userInput.getYaw();
+		dirpkt.updateCRC();
+		sendreceive(dirpkt.raw, sizeof(dirpkt.raw), ackpkt.raw, sizeof(ackpkt.raw));
 	}
 
 	/*
