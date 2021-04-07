@@ -108,6 +108,7 @@ int main()
     {
     	user_ctrl::update_controller_state(userInput);
     	debug_uart::update();
+    	user_ctrl::update_drive_motor(userInput);
     	storm_uart::update(userInput);
     }
 

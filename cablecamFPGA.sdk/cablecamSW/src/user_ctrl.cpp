@@ -12,6 +12,7 @@
 // Local includes
 #include "user_ctrl.hpp"
 #include "drivers/pwm_interpreter.hpp"
+#include "drivers/pwm_generator.hpp"
 
 namespace user_ctrl
 {
@@ -20,6 +21,7 @@ namespace user_ctrl
 	static PWMInterpreter channel4(XPAR_PWM_INTERPRETER_3_S00_AXI_BASEADDR);
 	static PWMInterpreter channel5(XPAR_PWM_INTERPRETER_4_S00_AXI_BASEADDR);
 	static PWMInterpreter channel6(XPAR_PWM_INTERPRETER_5_S00_AXI_BASEADDR);
+	static PWMGenerator	  driveMotor(XPAR_PWMGENERATOR_0_S_AXI_BASEADDR);
 
 	void handler(void * callback)
 	{
@@ -34,6 +36,9 @@ namespace user_ctrl
 		channel4.Enable();
 		channel5.Enable();
 		channel6.Enable();
+		driveMotor.StopDriveMotor();
+
+		xil_printf("PWM_Generator ID = %s", driveMotor.ReadID());
 
 		//channel1.EnableInterrupt();
 		//channel2.EnableInterrupt();
@@ -70,6 +75,11 @@ namespace user_ctrl
 		userInput.setDriveMotor(channel4.ReadDutyPeriod());
 		userInput.setEndpointSwitch(channel5.ReadDutyPeriod());
 		userInput.setControlSwitch(channel6.ReadDutyPeriod());
+	}
+
+	void update_drive_motor(HandController &userInput)
+	{
+		driveMotor.SetSpeed(userInput.getDriveMotor());
 	}
 }
 

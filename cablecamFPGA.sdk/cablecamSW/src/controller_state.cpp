@@ -37,7 +37,6 @@ void HandController::setControlSwitch(uint32_t val)
 
 void HandController::setDriveMotor(uint32_t val)
 {
-	uint32_t scaledval = val/100;
-	if( scaledval >= 1000 && scaledval <= 2000 )
-		driveMotor = scaledval;
+	if( val >= 100000 && val <= 200000 )
+		driveMotor = val;
 }
