@@ -41,7 +41,11 @@ entity top_level is
         usb_uart_txd    :   out std_logic;
         stormUART_rxd   :   in  std_logic;
         stormUART_txd   :   out std_logic;
-        PWMChannel      :   in  std_logic_vector(5 downto 0)
+        PWMChannel      :   in  std_logic_vector(5 downto 0);
+        driveMotor      :   out std_logic;
+        seg             :   out std_logic_vector(6 downto 0);
+        an              :   out std_logic_vector(3 downto 0);
+        dp              :   out std_logic
     );
 end top_level;
 
@@ -50,6 +54,9 @@ architecture Behavioral of top_level is
 component mb_subsystem_wrapper is
   port (
     PWMin : in STD_LOGIC_VECTOR ( 5 downto 0 );
+    digitan : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    digitdp : out STD_LOGIC;
+    digitseg : out STD_LOGIC_VECTOR ( 6 downto 0 );
     drive_motor_pwm : out STD_LOGIC;
     led : out STD_LOGIC_VECTOR ( 15 downto 0 );
     stormUART_rxd : in STD_LOGIC;
@@ -62,23 +69,23 @@ component mb_subsystem_wrapper is
   );
 end component;
 
-component pwm_generate is
-    port(
-        clk     : in std_logic;
-        rst_l   : in std_logic;
-        pwm_out : out std_logic
-    );
-end component;
+--component pwm_generate is
+--    port(
+--        clk     : in std_logic;
+--        rst_l   : in std_logic;
+--        pwm_out : out std_logic
+--    );
+--end component;
 
-signal pwm_out  : std_logic;
-signal pwm_in   : std_logic_vector(5 downto 0);
+--signal pwm_out  : std_logic;
+--signal pwm_in   : std_logic_vector(5 downto 0);
 
 begin
 
 microblaze_system : mb_subsystem_wrapper
 port map(
     PWMin           => PWMChannel,
-    drive_motor_pwm => open,
+    drive_motor_pwm => driveMotor,
     led             => led,
     sw              => sw,
     sys_clk         => clk,
@@ -89,12 +96,12 @@ port map(
     stormUART_txd   => stormUART_txd
 );
 
-pwm_create : pwm_generate
-port map(
-    clk     => clk,
-    rst_l   => '1',
-    pwm_out => pwm_out
-);
+--pwm_create : pwm_generate
+--port map(
+--    clk     => clk,
+--    rst_l   => '1',
+--    pwm_out => pwm_out
+--);
 
 --duplicate generated pwm signal
 --pwm_in(0) <= pwm_out;

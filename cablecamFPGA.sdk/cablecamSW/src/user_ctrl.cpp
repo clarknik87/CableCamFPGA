@@ -18,6 +18,7 @@ namespace user_ctrl
 {
 	static PWMInterpreter channel1(XPAR_PWM_INTERPRETER_0_S00_AXI_BASEADDR);
 	static PWMInterpreter channel2(XPAR_PWM_INTERPRETER_1_S00_AXI_BASEADDR);
+	static PWMInterpreter channel3(XPAR_PWM_INTERPRETER_2_S00_AXI_BASEADDR);
 	static PWMInterpreter channel4(XPAR_PWM_INTERPRETER_3_S00_AXI_BASEADDR);
 	static PWMInterpreter channel5(XPAR_PWM_INTERPRETER_4_S00_AXI_BASEADDR);
 	static PWMInterpreter channel6(XPAR_PWM_INTERPRETER_5_S00_AXI_BASEADDR);

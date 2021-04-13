@@ -107,6 +107,7 @@ int main()
     while(true)
     {
     	user_ctrl::update_controller_state(userInput);
+    	//read position sensor
     	debug_uart::update();
     	user_ctrl::update_drive_motor(userInput);
     	storm_uart::update(userInput);
