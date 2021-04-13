@@ -13,6 +13,7 @@
 class HandController
 {
 	uint32_t driveMotor;
+	uint32_t autospeed;
 	uint32_t cameraYaw;
 	uint32_t cameraPitch;
 	uint32_t endpointSwitch;
@@ -21,12 +22,14 @@ public:
 	uint32_t getYaw() 				{ return cameraYaw; }
 	uint32_t getPitch() 			{ return cameraPitch; }
 	uint32_t getDriveMotor() 		{ return driveMotor; }
+	uint32_t getAutoSpeed()			{ return autospeed; }
 	uint32_t getEndpointSwitch() 	{ return endpointSwitch; }
 	uint32_t getControlSwitch() 	{ return controlSwitch; }
 
 	void setYaw(uint32_t val);
 	void setPitch(uint32_t val);
 	void setDriveMotor(uint32_t val);
+	void setAutoSpeed(uint32_t val);
 	void setEndpointSwitch(uint32_t val);
 	void setControlSwitch(uint32_t val);
 };

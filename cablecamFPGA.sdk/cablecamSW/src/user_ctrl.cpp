@@ -34,6 +34,7 @@ namespace user_ctrl
 	{
 		channel1.Enable();
 		channel2.Enable();
+		channel3.Enable();
 		channel4.Enable();
 		channel5.Enable();
 		channel6.Enable();
@@ -43,6 +44,7 @@ namespace user_ctrl
 
 		//channel1.EnableInterrupt();
 		//channel2.EnableInterrupt();
+		//channel3.EnableInterrupt();
 		//channel4.EnableInterrupt();
 		//channel5.EnableInterrupt();
 		//channel6.EnableInterrupt();
@@ -53,18 +55,20 @@ namespace user_ctrl
 	int interrupt_connect(XIntc &IntrController, HandController &userInput)
 	{
 		//Connect all input channels to the handler.
-		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
-		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_1_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
-		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_3_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
-		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_4_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
-		XIntc_Connect(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_5_VEC_ID, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_0_INTERRUPT_INTR, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_1_INTERRUPT_INTR, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_2_INTERRUPT_INTR, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_3_INTERRUPT_INTR, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_4_INTERRUPT_INTR, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
+		XIntc_Connect(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_5_INTERRUPT_INTR, (Xil_ExceptionHandler)user_ctrl::handler, &userInput);
 
 		//Enable all channels in the interrupt vector table
-		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_0_VEC_ID);
-		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_1_VEC_ID);
-		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_3_VEC_ID);
-		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_4_VEC_ID);
-		//XIntc_Enable(&IntrController, XPAR_INTC_0_PWM_INTERPRETER_5_VEC_ID);
+		//XIntc_Enable(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_0_INTERRUPT_INTR);
+		//XIntc_Enable(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_1_INTERRUPT_INTR);
+		//XIntc_Enable(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_2_INTERRUPT_INTR);
+		//XIntc_Enable(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_3_INTERRUPT_INTR);
+		//XIntc_Enable(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_4_INTERRUPT_INTR);
+		//XIntc_Enable(&IntrController, XPAR_AXI_INTC_0_PWM_INTERPRETER_5_INTERRUPT_INTR);
 
 		return XST_SUCCESS;
 	}
