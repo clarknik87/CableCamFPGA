@@ -82,12 +82,14 @@ static int taskConnect(XIntc &mainIntrController, HandController &userInput)
 
 int main()
 {
-	XIntc mainIntrController;
-	HandController userInput;
-
 	// Initialize platform
     init_platform();
     xil_printf("<status> = System reset.\r\n");
+
+    // Instantiate Objects
+    XIntc mainIntrController;
+    HandController userInput;
+    SevenSegment segmentDisplays(XPAR_AXI_SEVENSEGMENTDRIV_0_S_AXI_BASEADDR);
 
     // Call task init() functions
     taskInit(mainIntrController);
@@ -104,15 +106,11 @@ int main()
     // Initialize Gimbal Control Module using storm_uart
     //storm_uart::start_gimbal_control();
 
-    SevenSegment segmentDisplays(XPAR_AXI_SEVENSEGMENTDRIV_0_S_AXI_BASEADDR);
-
-    for(int i=10; i >= -10; --i)
-    	segmentDisplays.DisplayValue(i);
-
     while(true)
     {
     	user_ctrl::update_controller_state(userInput);
     	//read position sensor
+    	//display sensor data on 7 segment displays
     	debug_uart::update();
     	user_ctrl::update_drive_motor(userInput);
     	storm_uart::update(userInput);

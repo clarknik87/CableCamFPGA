@@ -22,12 +22,12 @@ SevenSegment::SevenSegment(uintptr_t p_baseaddress)
 
 void SevenSegment::SetHex()
 {
-	Xil_Out32(baseaddress+SEVEN_SEGMENT_RADIX_REG, 0x1);
+	Xil_Out32(baseaddress+SEVEN_SEGMENT_RADIX_REG, 0x0);
 }
 
 void SevenSegment::SetDec()
 {
-	Xil_Out32(baseaddress+SEVEN_SEGMENT_RADIX_REG, 0x0);
+	Xil_Out32(baseaddress+SEVEN_SEGMENT_RADIX_REG, 0x1);
 }
 
 void SevenSegment::SetPointPosition(uint32_t pos)
@@ -39,6 +39,16 @@ void SevenSegment::DisplayValue(int32_t val)
 {
 	if(val > -1000 && val < 1000)
 	{
-		Xil_Out32(baseaddress+SEVEN_SEGMENT_VALUE_REG, (uint32_t)(+val));
+		if(val < 0)
+		{
+			val *= -1;
+			SetPointPosition(3);
+		}
+		else
+		{
+			val *= 1;
+			SetPointPosition(0);
+		}
+		Xil_Out32(baseaddress+SEVEN_SEGMENT_VALUE_REG, (uint32_t)(val));
 	}
 }
