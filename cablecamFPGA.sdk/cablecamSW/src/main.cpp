@@ -57,7 +57,7 @@
 #include "user_ctrl.hpp"
 #include "platform.h"
 
-
+#include "drivers/seven_segment.hpp"
 
 static int taskInit(XIntc &mainIntrController)
 {
@@ -102,7 +102,12 @@ int main()
     xil_printf("<status> = Started interrupt controller\r\n");
 
     // Initialize Gimbal Control Module using storm_uart
-    storm_uart::start_gimbal_control();
+    //storm_uart::start_gimbal_control();
+
+    SevenSegment segmentDisplays(XPAR_AXI_SEVENSEGMENTDRIV_0_S_AXI_BASEADDR);
+
+    for(int i=10; i >= -10; --i)
+    	segmentDisplays.DisplayValue(i);
 
     while(true)
     {

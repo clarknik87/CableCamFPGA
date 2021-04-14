@@ -85,6 +85,9 @@ begin
 microblaze_system : mb_subsystem_wrapper
 port map(
     PWMin           => PWMChannel,
+    digitan         => an,
+    digitdp         => dp,
+    digitseg        => seg,
     drive_motor_pwm => driveMotor,
     led             => led,
     sw              => sw,
