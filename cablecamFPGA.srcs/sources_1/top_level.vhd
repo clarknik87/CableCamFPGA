@@ -45,7 +45,8 @@ entity top_level is
         driveMotor      :   out std_logic;
         seg             :   out std_logic_vector(6 downto 0);
         an              :   out std_logic_vector(3 downto 0);
-        dp              :   out std_logic
+        dp              :   out std_logic;
+        hall_effect     :   in std_logic
     );
 end top_level;
 
@@ -65,7 +66,8 @@ component mb_subsystem_wrapper is
     sys_clk : in STD_LOGIC;
     sys_reset : in STD_LOGIC;
     usb_uart_rxd : in STD_LOGIC;
-    usb_uart_txd : out STD_LOGIC
+    usb_uart_txd : out STD_LOGIC;
+    hall_effect : in STD_LOGIC
   );
 end component;
 
@@ -96,7 +98,8 @@ port map(
     usb_uart_rxd    => usb_uart_rxd,
     usb_uart_txd    => usb_uart_txd,
     stormUART_rxd   => stormUART_rxd,
-    stormUART_txd   => stormUART_txd
+    stormUART_txd   => stormUART_txd,
+    hall_effect     => hall_effect
 );
 
 --pwm_create : pwm_generate

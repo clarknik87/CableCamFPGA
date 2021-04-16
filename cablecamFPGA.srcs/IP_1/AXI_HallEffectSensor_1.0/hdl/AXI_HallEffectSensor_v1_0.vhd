@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity PWMGenerator_v1_0 is
+entity AXI_HallEffectSensor_v1_0 is
 	generic (
 		-- Users to add parameters here
 
@@ -16,8 +16,10 @@ entity PWMGenerator_v1_0 is
 	);
 	port (
 		-- Users to add ports here
-        drive_sig_out : out std_logic;
-        drive_speed   : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        HALL_EFFECT : in std_logic;
+        an          : out std_logic_vector(3 downto 0);
+        seg         : out std_logic_vector(0 to 6);
+        SET_SPEED   : in std_logic_vector(31 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -45,19 +47,21 @@ entity PWMGenerator_v1_0 is
 		s_axi_rvalid	: out std_logic;
 		s_axi_rready	: in std_logic
 	);
-end PWMGenerator_v1_0;
+end AXI_HallEffectSensor_v1_0;
 
-architecture arch_imp of PWMGenerator_v1_0 is
+architecture arch_imp of AXI_HallEffectSensor_v1_0 is
 
 	-- component declaration
-	component PWMGenerator_v1_0_S_AXI is
+	component AXI_HallEffectSensor_v1_0_S_AXI is
 		generic (
 		C_S_AXI_DATA_WIDTH	: integer	:= 32;
 		C_S_AXI_ADDR_WIDTH	: integer	:= 4
 		);
 		port (
-		DRIVE_SIG_OUT : out std_logic;
-		drive_speed   : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+		HALL_EFFECT : in std_logic;
+        an          : out std_logic_vector(3 downto 0);
+        seg         : out std_logic_vector(0 to 6);
+        SET_SPEED   : in std_logic_vector(31 downto 0);
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
 		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -80,19 +84,21 @@ architecture arch_imp of PWMGenerator_v1_0 is
 		S_AXI_RVALID	: out std_logic;
 		S_AXI_RREADY	: in std_logic
 		);
-	end component PWMGenerator_v1_0_S_AXI;
+	end component AXI_HallEffectSensor_v1_0_S_AXI;
 
 begin
 
 -- Instantiation of Axi Bus Interface S_AXI
-PWMGenerator_v1_0_S_AXI_inst : PWMGenerator_v1_0_S_AXI
+AXI_HallEffectSensor_v1_0_S_AXI_inst : AXI_HallEffectSensor_v1_0_S_AXI
 	generic map (
 		C_S_AXI_DATA_WIDTH	=> C_S_AXI_DATA_WIDTH,
 		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH
 	)
 	port map (
-	    DRIVE_SIG_OUT => drive_sig_out,
-	    drive_speed    => drive_speed,
+	    HALL_EFFECT      => HALL_EFFECT,
+        an               => an,
+        seg              => seg,
+        SET_SPEED        => SET_SPEED,
 		S_AXI_ACLK	=> s_axi_aclk,
 		S_AXI_ARESETN	=> s_axi_aresetn,
 		S_AXI_AWADDR	=> s_axi_awaddr,

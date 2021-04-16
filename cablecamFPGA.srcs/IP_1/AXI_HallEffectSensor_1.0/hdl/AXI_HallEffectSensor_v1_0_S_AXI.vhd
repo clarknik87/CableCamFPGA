@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity PWMGenerator_v1_0_S_AXI is
+entity AXI_HallEffectSensor_v1_0_S_AXI is
 	generic (
 		-- Users to add parameters here
 
@@ -16,8 +16,10 @@ entity PWMGenerator_v1_0_S_AXI is
 	);
 	port (
 		-- Users to add ports here
-        DRIVE_SIG_OUT : out std_logic;
-        drive_speed   : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        HALL_EFFECT : in std_logic;
+        an          : out std_logic_vector(3 downto 0);
+        seg         : out std_logic_vector(0 to 6);
+        SET_SPEED   : in std_logic_vector(31 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -82,9 +84,9 @@ entity PWMGenerator_v1_0_S_AXI is
     		-- accept the read data and response information.
 		S_AXI_RREADY	: in std_logic
 	);
-end PWMGenerator_v1_0_S_AXI;
+end AXI_HallEffectSensor_v1_0_S_AXI;
 
-architecture arch_imp of PWMGenerator_v1_0_S_AXI is
+architecture arch_imp of AXI_HallEffectSensor_v1_0_S_AXI is
 
 	-- AXI4LITE signals
 	signal axi_awaddr	: std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -119,16 +121,19 @@ architecture arch_imp of PWMGenerator_v1_0_S_AXI is
 	signal byte_index	: integer;
 	signal aw_en	: std_logic;
 	
-	component drive_motor is
-        port (
-            CLK100MHZ : in std_logic;
-            RST_L     : in std_logic;
+	component position is
+        port(
+            CLK100MHZ : in std_logic; 
+            HALL_EFFECT : in std_logic;
+            an : out std_logic_vector(3 downto 0);
+            seg : out std_logic_vector(0 to 6);
+            RST_L : in std_logic;
             SET_SPEED : in std_logic_vector(31 downto 0);
-            DRIVE_SIG_OUT : out std_logic
+            POSITION : out std_logic_vector(31 downto 0)
         );
     end component;
     
-    signal id_reg : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+    signal position_reg : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 
 begin
 	-- I/O Connections assignments
@@ -364,13 +369,13 @@ begin
 	    loc_addr := axi_araddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 	    case loc_addr is
 	      when b"00" =>
-	        reg_data_out <= slv_reg0;
+	        reg_data_out <= position_reg;
 	      when b"01" =>
 	        reg_data_out <= slv_reg1;
 	      when b"10" =>
 	        reg_data_out <= slv_reg2;
 	      when b"11" =>
-	        reg_data_out <= id_reg;
+	        reg_data_out <= slv_reg3;
 	      when others =>
 	        reg_data_out  <= (others => '0');
 	    end case;
@@ -396,17 +401,16 @@ begin
 
 
 	-- Add user logic here
-     motor : drive_motor
-     port map(
-            CLK100MHZ => S_AXI_ACLK,
-            RST_L     => S_AXI_ARESETN,
-            SET_SPEED => slv_reg0,
-            DRIVE_SIG_OUT => DRIVE_SIG_OUT 
-     );
-     
-     id_reg <= std_logic_vector(to_unsigned( 5129543, slv_reg3'length));
-     
-     drive_speed <= slv_reg0;
+    hall_sensor : position
+    port map(
+            CLK100MHZ   => S_AXI_ACLK,
+            HALL_EFFECT => HALL_EFFECT,
+            an          => an,
+            seg         => seg,
+            RST_L       => S_AXI_ARESETN,
+            SET_SPEED   => SET_SPEED,
+            POSITION    => position_reg
+        );
 	-- User logic ends
 
 end arch_imp;

@@ -58,6 +58,7 @@
 #include "platform.h"
 
 #include "drivers/seven_segment.hpp"
+#include "drivers/position_sensor.hpp"
 
 static int taskInit(XIntc &mainIntrController)
 {
@@ -87,9 +88,10 @@ int main()
     xil_printf("<status> = System reset.\r\n");
 
     // Instantiate Objects
-    XIntc mainIntrController;
-    HandController userInput;
-    SevenSegment segmentDisplays(XPAR_AXI_SEVENSEGMENTDRIV_0_S_AXI_BASEADDR);
+    XIntc 			mainIntrController;
+    HandController 	userInput;
+    //SevenSegment 	segmentDisplays(XPAR_AXI_SEVENSEGMENTDRIV_0_S_AXI_BASEADDR);
+    PositionSensor 	positionSensor(XPAR_AXI_HALLEFFECTSENSOR_0_S_AXI_BASEADDR);
 
     // Call task init() functions
     taskInit(mainIntrController);
@@ -104,13 +106,14 @@ int main()
     xil_printf("<status> = Started interrupt controller\r\n");
 
     // Initialize Gimbal Control Module using storm_uart
-    //storm_uart::start_gimbal_control();
+    storm_uart::start_gimbal_control();
 
     while(true)
     {
+    	int32_t position;
+    	position = positionSensor.GetPosition();
+    	//segmentDisplays.DisplayValue(position);
     	user_ctrl::update_controller_state(userInput);
-    	//read position sensor
-    	//display sensor data on 7 segment displays
     	debug_uart::update();
     	user_ctrl::update_drive_motor(userInput);
     	storm_uart::update(userInput);
