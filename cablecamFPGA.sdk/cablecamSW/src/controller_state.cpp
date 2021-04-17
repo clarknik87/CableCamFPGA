@@ -7,6 +7,8 @@
 
 #include "controller_state.hpp"
 
+constexpr uint32_t maxDriveSpeed = 170000;
+
 void HandController::setYaw(uint32_t val)
 {
 	uint32_t scaledval = val/100;
@@ -35,12 +37,15 @@ void HandController::setControlSwitch(uint32_t val)
 
 void HandController::setDriveMotor(uint32_t val)
 {
-	if( val >= 100000 && val <= 200000 )
-		driveMotor = val;
+	if( val >= 100000 && val <= 200000 && val <= maxDriveSpeed )
+	{
+		if( val != 168726 && val != 168725 ) //The controller randomly sends out blips like this
+			driveMotor = val;
+	}
 }
 
 void HandController::setAutoSpeed(uint32_t val)
 {
-	if( val >= 100000 && val <= 200000 )
+	if( val >= 100000 && val <= 200000 && val <=maxDriveSpeed )
 			autospeed = val;
 }
