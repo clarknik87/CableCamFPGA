@@ -56,6 +56,7 @@
 #include "storm_uart.hpp"
 #include "user_ctrl.hpp"
 #include "platform.h"
+#include "xtmrctr.h"
 
 #include "drivers/seven_segment.hpp"
 #include "drivers/position_sensor.hpp"

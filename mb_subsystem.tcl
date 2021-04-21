@@ -129,6 +129,7 @@ user.org:user:AXI_SevenSegmentDriver:2.0\
 user.org:user:PWMGenerator:2.0\
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:axi_intc:4.1\
+xilinx.com:ip:axi_timer:2.0\
 xilinx.com:ip:axi_uartlite:2.0\
 xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:mdm:3.2\
@@ -333,6 +334,9 @@ proc create_root_design { parentCell } {
   # Create instance: axi_intc_0, and set properties
   set axi_intc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 axi_intc_0 ]
 
+  # Create instance: axi_timer_0, and set properties
+  set axi_timer_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer:2.0 axi_timer_0 ]
+
   # Create instance: axi_uartlite_Storm32, and set properties
   set axi_uartlite_Storm32 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_Storm32 ]
   set_property -dict [ list \
@@ -373,7 +377,7 @@ proc create_root_design { parentCell } {
   set microblaze_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 microblaze_0_axi_periph ]
   set_property -dict [ list \
    CONFIG.ENABLE_ADVANCED_OPTIONS {0} \
-   CONFIG.NUM_MI {13} \
+   CONFIG.NUM_MI {14} \
  ] $microblaze_0_axi_periph
 
   # Create instance: microblaze_0_local_memory
@@ -476,6 +480,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net microblaze_0_axi_periph_M10_AXI [get_bd_intf_pins PWMGenerator_0/S_AXI] [get_bd_intf_pins microblaze_0_axi_periph/M10_AXI]
   connect_bd_intf_net -intf_net microblaze_0_axi_periph_M11_AXI [get_bd_intf_pins AXI_SevenSegmentDriv_0/S_AXI] [get_bd_intf_pins microblaze_0_axi_periph/M11_AXI]
   connect_bd_intf_net -intf_net microblaze_0_axi_periph_M12_AXI [get_bd_intf_pins AXI_HallEffectSensor_0/S_AXI] [get_bd_intf_pins microblaze_0_axi_periph/M12_AXI]
+  connect_bd_intf_net -intf_net microblaze_0_axi_periph_M13_AXI [get_bd_intf_pins axi_timer_0/S_AXI] [get_bd_intf_pins microblaze_0_axi_periph/M13_AXI]
   connect_bd_intf_net -intf_net microblaze_0_debug [get_bd_intf_pins mdm_1/MBDEBUG_0] [get_bd_intf_pins microblaze_0/DEBUG]
   connect_bd_intf_net -intf_net microblaze_0_dlmb_1 [get_bd_intf_pins microblaze_0/DLMB] [get_bd_intf_pins microblaze_0_local_memory/DLMB]
   connect_bd_intf_net -intf_net microblaze_0_ilmb_1 [get_bd_intf_pins microblaze_0/ILMB] [get_bd_intf_pins microblaze_0_local_memory/ILMB]
@@ -495,7 +500,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net axi_uartlite_Storm32_tx [get_bd_ports stormUART_txd] [get_bd_pins axi_uartlite_Storm32/tx]
   connect_bd_net -net hall_effect_1 [get_bd_ports hall_effect] [get_bd_pins AXI_HallEffectSensor_0/HALL_EFFECT]
   connect_bd_net -net mdm_1_debug_sys_rst [get_bd_pins mdm_1/Debug_SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/mb_debug_sys_rst]
-  connect_bd_net -net microblaze_0_Clk [get_bd_pins AXI_HallEffectSensor_0/s_axi_aclk] [get_bd_pins AXI_SevenSegmentDriv_0/s_axi_aclk] [get_bd_pins PWMGenerator_0/s_axi_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_uartlite_Storm32/s_axi_aclk] [get_bd_pins axi_uartlite_usb/s_axi_aclk] [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/M09_ACLK] [get_bd_pins microblaze_0_axi_periph/M10_ACLK] [get_bd_pins microblaze_0_axi_periph/M11_ACLK] [get_bd_pins microblaze_0_axi_periph/M12_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins pwm_interpreter_0/s00_axi_aclk] [get_bd_pins pwm_interpreter_1/s00_axi_aclk] [get_bd_pins pwm_interpreter_2/s00_axi_aclk] [get_bd_pins pwm_interpreter_3/s00_axi_aclk] [get_bd_pins pwm_interpreter_4/s00_axi_aclk] [get_bd_pins pwm_interpreter_5/s00_axi_aclk] [get_bd_pins rst_clk_wiz_1_100M/slowest_sync_clk]
+  connect_bd_net -net microblaze_0_Clk [get_bd_pins AXI_HallEffectSensor_0/s_axi_aclk] [get_bd_pins AXI_SevenSegmentDriv_0/s_axi_aclk] [get_bd_pins PWMGenerator_0/s_axi_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_timer_0/s_axi_aclk] [get_bd_pins axi_uartlite_Storm32/s_axi_aclk] [get_bd_pins axi_uartlite_usb/s_axi_aclk] [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/M09_ACLK] [get_bd_pins microblaze_0_axi_periph/M10_ACLK] [get_bd_pins microblaze_0_axi_periph/M11_ACLK] [get_bd_pins microblaze_0_axi_periph/M12_ACLK] [get_bd_pins microblaze_0_axi_periph/M13_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins pwm_interpreter_0/s00_axi_aclk] [get_bd_pins pwm_interpreter_1/s00_axi_aclk] [get_bd_pins pwm_interpreter_2/s00_axi_aclk] [get_bd_pins pwm_interpreter_3/s00_axi_aclk] [get_bd_pins pwm_interpreter_4/s00_axi_aclk] [get_bd_pins pwm_interpreter_5/s00_axi_aclk] [get_bd_pins rst_clk_wiz_1_100M/slowest_sync_clk]
   connect_bd_net -net pwm_interpreter_0_interrupt [get_bd_pins pwm_interpreter_0/interrupt] [get_bd_pins xlconcat_0/In3]
   connect_bd_net -net pwm_interpreter_1_interrupt [get_bd_pins pwm_interpreter_1/interrupt] [get_bd_pins xlconcat_0/In4]
   connect_bd_net -net pwm_interpreter_2_interrupt [get_bd_pins pwm_interpreter_2/interrupt] [get_bd_pins xlconcat_0/In5]
@@ -505,7 +510,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net rst_clk_wiz_1_100M_bus_struct_reset [get_bd_pins microblaze_0_local_memory/SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/bus_struct_reset]
   connect_bd_net -net rst_clk_wiz_1_100M_interconnect_aresetn [get_bd_pins microblaze_0_axi_periph/ARESETN] [get_bd_pins rst_clk_wiz_1_100M/interconnect_aresetn]
   connect_bd_net -net rst_clk_wiz_1_100M_mb_reset [get_bd_pins microblaze_0/Reset] [get_bd_pins rst_clk_wiz_1_100M/mb_reset]
-  connect_bd_net -net rst_clk_wiz_1_100M_peripheral_aresetn [get_bd_pins AXI_HallEffectSensor_0/s_axi_aresetn] [get_bd_pins AXI_SevenSegmentDriv_0/s_axi_aresetn] [get_bd_pins PWMGenerator_0/s_axi_aresetn] [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_uartlite_Storm32/s_axi_aresetn] [get_bd_pins axi_uartlite_usb/s_axi_aresetn] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/M03_ARESETN] [get_bd_pins microblaze_0_axi_periph/M04_ARESETN] [get_bd_pins microblaze_0_axi_periph/M05_ARESETN] [get_bd_pins microblaze_0_axi_periph/M06_ARESETN] [get_bd_pins microblaze_0_axi_periph/M07_ARESETN] [get_bd_pins microblaze_0_axi_periph/M08_ARESETN] [get_bd_pins microblaze_0_axi_periph/M09_ARESETN] [get_bd_pins microblaze_0_axi_periph/M10_ARESETN] [get_bd_pins microblaze_0_axi_periph/M11_ARESETN] [get_bd_pins microblaze_0_axi_periph/M12_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins pwm_interpreter_0/s00_axi_aresetn] [get_bd_pins pwm_interpreter_1/s00_axi_aresetn] [get_bd_pins pwm_interpreter_2/s00_axi_aresetn] [get_bd_pins pwm_interpreter_3/s00_axi_aresetn] [get_bd_pins pwm_interpreter_4/s00_axi_aresetn] [get_bd_pins pwm_interpreter_5/s00_axi_aresetn] [get_bd_pins rst_clk_wiz_1_100M/peripheral_aresetn]
+  connect_bd_net -net rst_clk_wiz_1_100M_peripheral_aresetn [get_bd_pins AXI_HallEffectSensor_0/s_axi_aresetn] [get_bd_pins AXI_SevenSegmentDriv_0/s_axi_aresetn] [get_bd_pins PWMGenerator_0/s_axi_aresetn] [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_timer_0/s_axi_aresetn] [get_bd_pins axi_uartlite_Storm32/s_axi_aresetn] [get_bd_pins axi_uartlite_usb/s_axi_aresetn] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/M03_ARESETN] [get_bd_pins microblaze_0_axi_periph/M04_ARESETN] [get_bd_pins microblaze_0_axi_periph/M05_ARESETN] [get_bd_pins microblaze_0_axi_periph/M06_ARESETN] [get_bd_pins microblaze_0_axi_periph/M07_ARESETN] [get_bd_pins microblaze_0_axi_periph/M08_ARESETN] [get_bd_pins microblaze_0_axi_periph/M09_ARESETN] [get_bd_pins microblaze_0_axi_periph/M10_ARESETN] [get_bd_pins microblaze_0_axi_periph/M11_ARESETN] [get_bd_pins microblaze_0_axi_periph/M12_ARESETN] [get_bd_pins microblaze_0_axi_periph/M13_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins pwm_interpreter_0/s00_axi_aresetn] [get_bd_pins pwm_interpreter_1/s00_axi_aresetn] [get_bd_pins pwm_interpreter_2/s00_axi_aresetn] [get_bd_pins pwm_interpreter_3/s00_axi_aresetn] [get_bd_pins pwm_interpreter_4/s00_axi_aresetn] [get_bd_pins pwm_interpreter_5/s00_axi_aresetn] [get_bd_pins rst_clk_wiz_1_100M/peripheral_aresetn]
   connect_bd_net -net stormUART_rxd_1 [get_bd_ports stormUART_rxd] [get_bd_pins axi_uartlite_Storm32/rx]
   connect_bd_net -net sw_1 [get_bd_ports sw] [get_bd_pins axi_gpio_0/gpio2_io_i]
   connect_bd_net -net sys_clk_1 [get_bd_ports sys_clk] [get_bd_pins clk_wiz_1/clk_in1]
@@ -525,6 +530,7 @@ proc create_root_design { parentCell } {
   create_bd_addr_seg -range 0x00010000 -offset 0x44A60000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs PWMGenerator_0/S_AXI/S_AXI_reg] SEG_PWMGenerator_0_S_AXI_reg
   create_bd_addr_seg -range 0x00010000 -offset 0x40000000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
   create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] SEG_axi_intc_0_Reg
+  create_bd_addr_seg -range 0x00010000 -offset 0x41C00000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_timer_0/S_AXI/Reg] SEG_axi_timer_0_Reg
   create_bd_addr_seg -range 0x00010000 -offset 0x40600000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_uartlite_usb/S_AXI/Reg] SEG_axi_uartlite_0_Reg
   create_bd_addr_seg -range 0x00010000 -offset 0x40610000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_uartlite_Storm32/S_AXI/Reg] SEG_axi_uartlite_0_Reg1
   create_bd_addr_seg -range 0x00010000 -offset 0x00000000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] SEG_dlmb_bram_if_cntlr_Mem
