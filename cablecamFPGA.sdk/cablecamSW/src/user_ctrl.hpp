@@ -16,7 +16,7 @@ namespace user_ctrl
 	int init();
 	int interrupt_connect(XIntc &IntrController, HandController &userInput);
 	void update_controller_state(HandController &userInput);
-	void update_drive_motor(HandController &userInput);
+	void update_drive_motor(HandController &userInput, int32_t position);
 }
 
 

@@ -108,14 +108,14 @@ int main()
     // Initialize Gimbal Control Module using storm_uart
     storm_uart::start_gimbal_control();
 
+    int32_t position;
     while(true)
     {
-    	int32_t position;
     	position = positionSensor.GetPosition();
     	//segmentDisplays.DisplayValue(position);
     	user_ctrl::update_controller_state(userInput);
     	debug_uart::update();
-    	user_ctrl::update_drive_motor(userInput);
+    	user_ctrl::update_drive_motor(userInput, position);
     	storm_uart::update(userInput);
     }
 

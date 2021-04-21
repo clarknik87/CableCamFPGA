@@ -25,13 +25,13 @@ void HandController::setPitch(uint32_t val)
 
 void HandController::setEndpointSwitch(uint32_t val)
 {
-	if( val >= 1000 && val <= 2000 )
+	if( val >= 100000 && val <= 200000 )
 		endpointSwitch = val;
 }
 
 void HandController::setControlSwitch(uint32_t val)
 {
-	if( val >= 1000 && val <= 2000 )
+	if( val >= 100000 && val <= 200000 )
 		controlSwitch = val;
 }
 
@@ -48,4 +48,22 @@ void HandController::setAutoSpeed(uint32_t val)
 {
 	if( val >= 100000 && val <= 200000 && val <=maxDriveSpeed )
 			autospeed = val;
+}
+
+SwitchPosition HandController::getEndpointSwitch()
+{
+	if( endpointSwitch < 140000 )
+		return SwitchPosition::up;
+	else if( endpointSwitch > 160000 )
+		return SwitchPosition::down;
+	else
+		return SwitchPosition::center;
+}
+
+SwitchPosition HandController::getControlSwitch()
+{
+	if( controlSwitch < 150000 )
+		return SwitchPosition::up;
+	else
+		return SwitchPosition::down;
 }

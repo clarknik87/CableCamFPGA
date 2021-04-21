@@ -10,6 +10,13 @@
 
 #include <cstdint>
 
+enum class SwitchPosition
+{
+	up,
+	down,
+	center
+};
+
 class HandController
 {
 	uint32_t driveMotor;
@@ -19,12 +26,12 @@ class HandController
 	uint32_t endpointSwitch;
 	uint32_t controlSwitch;
 public:
-	uint32_t getYaw() 				{ return cameraYaw; }
-	uint32_t getPitch() 			{ return cameraPitch; }
-	uint32_t getDriveMotor() 		{ return driveMotor; }
-	uint32_t getAutoSpeed()			{ return autospeed; }
-	uint32_t getEndpointSwitch() 	{ return endpointSwitch; }
-	uint32_t getControlSwitch() 	{ return controlSwitch; }
+	uint32_t 		getYaw() 				{ return cameraYaw; }
+	uint32_t 		getPitch() 				{ return cameraPitch; }
+	uint32_t 		getDriveMotor() 		{ return driveMotor; }
+	uint32_t 		getAutoSpeed()			{ return autospeed; }
+	SwitchPosition 	getEndpointSwitch();
+	SwitchPosition 	getControlSwitch();
 
 	void setYaw(uint32_t val);
 	void setPitch(uint32_t val);

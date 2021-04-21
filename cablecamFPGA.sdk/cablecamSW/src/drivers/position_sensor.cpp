@@ -20,6 +20,7 @@ PositionSensor::PositionSensor(uintptr_t p_baseaddress)
 int32_t PositionSensor::GetPosition()
 {
 	position = (int32_t)Xil_In32(baseaddress+POSITION_SENSOR_POSITION_REG);
+	return position;
 
 	//If stored as sign and magnitude instead.
 	/*

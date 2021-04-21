@@ -22,7 +22,11 @@ namespace user_ctrl
 	static PWMInterpreter channel4(XPAR_PWM_INTERPRETER_3_S00_AXI_BASEADDR);
 	static PWMInterpreter channel5(XPAR_PWM_INTERPRETER_4_S00_AXI_BASEADDR);
 	static PWMInterpreter channel6(XPAR_PWM_INTERPRETER_5_S00_AXI_BASEADDR);
+
 	static PWMGenerator	  driveMotor(XPAR_PWMGENERATOR_0_S_AXI_BASEADDR);
+	static int32_t 		  waypointA = -10000000;
+	static int32_t		  waypointB = 10000000;
+
 
 	void handler(void * callback)
 	{
@@ -82,9 +86,27 @@ namespace user_ctrl
 		userInput.setControlSwitch(channel6.ReadDutyPeriod());
 	}
 
-	void update_drive_motor(HandController &userInput)
+	void update_drive_motor(HandController &userInput, int32_t position)
 	{
-		driveMotor.SetSpeed(userInput.getDriveMotor());
+		//set waypoints if in manual mode, and if endpoint switch not centered
+		if( userInput.getControlSwitch() == SwitchPosition::up )
+		{
+			if( userInput.getEndpointSwitch() == SwitchPosition::up && position < 0 )
+				waypointA = position;
+			else if( userInput.getEndpointSwitch() == SwitchPosition::down && position > 0 )
+				waypointB = position;
+		}
+
+		//set drive motor speed
+		if( (userInput.getDriveMotor() >= 150000 && position < waypointB) ||
+			(userInput.getDriveMotor() <= 150000 && position > waypointA)	)
+		{
+			driveMotor.SetSpeed(userInput.getDriveMotor());
+		}
+		else
+		{
+			driveMotor.StopDriveMotor();
+		}
 	}
 }
 
