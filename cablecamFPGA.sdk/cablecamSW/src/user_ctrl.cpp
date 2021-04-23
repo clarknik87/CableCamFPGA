@@ -13,6 +13,7 @@
 #include "user_ctrl.hpp"
 #include "drivers/pwm_interpreter.hpp"
 #include "drivers/pwm_generator.hpp"
+#include "drivers/timer_helper.hpp"
 
 namespace user_ctrl
 {
@@ -24,8 +25,8 @@ namespace user_ctrl
 	static PWMInterpreter channel6(XPAR_PWM_INTERPRETER_5_S00_AXI_BASEADDR);
 
 	static PWMGenerator	  driveMotor(XPAR_PWMGENERATOR_0_S_AXI_BASEADDR);
-	static int32_t 		  waypointA = -10000000;
-	static int32_t		  waypointB = 10000000;
+	static int32_t 		  waypointA;
+	static int32_t		  waypointB;
 
 
 	void handler(void * callback)
@@ -52,6 +53,9 @@ namespace user_ctrl
 		//channel4.EnableInterrupt();
 		//channel5.EnableInterrupt();
 		//channel6.EnableInterrupt();
+
+		waypointA = -100;
+		waypointB = 100;
 
 		return XST_SUCCESS;
 	}
@@ -81,10 +85,17 @@ namespace user_ctrl
 	{
 		userInput.setYaw(channel1.ReadDutyPeriod());
 		userInput.setPitch(channel2.ReadDutyPeriod());
+		userInput.setAutoSpeed(channel3.ReadDutyPeriod());
 		userInput.setDriveMotor(channel4.ReadDutyPeriod());
 		userInput.setEndpointSwitch(channel5.ReadDutyPeriod());
 		userInput.setControlSwitch(channel6.ReadDutyPeriod());
 	}
+
+	static bool waitState = false;
+	static int autoDirection = 1;
+	static uint64_t time1 = 0;
+	static uint64_t time2;
+	constexpr uint64_t delayTime = 1.5*XPAR_MICROBLAZE_CORE_CLOCK_FREQ_HZ;
 
 	void update_drive_motor(HandController &userInput, int32_t position)
 	{
@@ -97,15 +108,46 @@ namespace user_ctrl
 				waypointB = position;
 		}
 
-		//set drive motor speed
-		if( (userInput.getDriveMotor() >= 150000 && position < waypointB) ||
-			(userInput.getDriveMotor() <= 150000 && position > waypointA)	)
+		//Manual Mode
+		if( userInput.getControlSwitch() == SwitchPosition::up )
 		{
-			driveMotor.SetSpeed(userInput.getDriveMotor());
+			if( (userInput.getDriveMotor() >= 150000 && position < waypointB) ||
+				(userInput.getDriveMotor() <= 150000 && position > waypointA)	)
+			{
+				driveMotor.SetSpeed(userInput.getDriveMotor());
+			}
+			else
+			{
+				driveMotor.StopDriveMotor();
+			}
 		}
-		else
+		//Auto Mode
+		else if( userInput.getControlSwitch() == SwitchPosition::down )
 		{
-			driveMotor.StopDriveMotor();
+			if( !waitState )
+			{
+				if( (autoDirection > 0 && position < waypointB) || (autoDirection < 0 && position > waypointA) )
+				{
+					driveMotor.SetSpeed(userInput.getAutoSpeed());
+				}
+				else
+				{
+					driveMotor.StopDriveMotor();
+					//waitState = true;
+					for(int i=0; i < 100000000; ++i);
+					autoDirection = -autoDirection;
+					//time1 = globalTimer.getTicks();
+				}
+			}
+			else
+			{
+				time2 = globalTimer.getTicks();
+				if( time2-time1 == delayTime )
+				{
+					autoDirection = -autoDirection;
+					waitState = false;
+				}
+			}
 		}
 	}
 }

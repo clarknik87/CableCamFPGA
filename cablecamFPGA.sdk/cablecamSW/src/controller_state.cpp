@@ -46,15 +46,15 @@ void HandController::setDriveMotor(uint32_t val)
 
 void HandController::setAutoSpeed(uint32_t val)
 {
-	if( val >= 100000 && val <= 200000 && val <=maxDriveSpeed )
-			autospeed = val;
+	if( val >= 100000 && val <= 200000)
+		autospeed = (((maxDriveSpeed - 150000)/100000.0)*val + 300000 - maxDriveSpeed);
 }
 
 SwitchPosition HandController::getEndpointSwitch()
 {
-	if( endpointSwitch < 140000 )
+	if( endpointSwitch < 125000 )
 		return SwitchPosition::up;
-	else if( endpointSwitch > 160000 )
+	else if( endpointSwitch > 175000 )
 		return SwitchPosition::down;
 	else
 		return SwitchPosition::center;

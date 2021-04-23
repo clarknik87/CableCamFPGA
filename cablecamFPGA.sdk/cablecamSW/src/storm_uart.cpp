@@ -233,6 +233,10 @@ namespace storm_uart
 		return XST_SUCCESS;
 	}
 
+	static double prev_yaw = 1500;
+	static double prev_pitch = 1500;
+	constexpr double sensitivity = 1.1;
+
 	void update(HandController &userInput)
 	{
 		// If any packets have been sent by the gimbal controller,
@@ -248,10 +252,13 @@ namespace storm_uart
 		//Set gimbal direction
 		setPitchRollYaw::request  dirpkt;
 		setPitchRollYaw::response ackpkt;
-		dirpkt.pkt.pitchvalue = userInput.getPitch();
-		dirpkt.pkt.yawvalue   = userInput.getYaw();
+		dirpkt.pkt.pitchvalue = prev_pitch + (0.002*sensitivity*userInput.getPitch() - 3*sensitivity);
+		dirpkt.pkt.yawvalue   = prev_yaw + (0.002*sensitivity*userInput.getYaw() - 3*sensitivity);
 		dirpkt.updateCRC();
 		sendreceive(dirpkt.raw, sizeof(dirpkt.raw), ackpkt.raw, sizeof(ackpkt.raw));
+
+		prev_yaw = prev_yaw + (0.002*sensitivity*userInput.getYaw() - 3*sensitivity);
+		prev_pitch = prev_pitch + (0.002*sensitivity*userInput.getPitch() - 3*sensitivity);
 	}
 
 	/*

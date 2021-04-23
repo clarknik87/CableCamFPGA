@@ -56,10 +56,12 @@
 #include "storm_uart.hpp"
 #include "user_ctrl.hpp"
 #include "platform.h"
-#include "xtmrctr.h"
 
 #include "drivers/seven_segment.hpp"
 #include "drivers/position_sensor.hpp"
+#include "drivers/timer_helper.hpp"
+
+TimerHelper globalTimer(XPAR_TMRCTR_0_DEVICE_ID);
 
 static int taskInit(XIntc &mainIntrController)
 {
@@ -109,15 +111,30 @@ int main()
     // Initialize Gimbal Control Module using storm_uart
     storm_uart::start_gimbal_control();
 
+
+    //timing variables
+    uint64_t time1;
+    uint64_t time2;
+    uint64_t diff = 0;
+
     int32_t position;
     while(true)
     {
+    	time1 = globalTimer.getTicks();
+
     	position = positionSensor.GetPosition();
     	//segmentDisplays.DisplayValue(position);
     	user_ctrl::update_controller_state(userInput);
     	debug_uart::update();
     	user_ctrl::update_drive_motor(userInput, position);
     	storm_uart::update(userInput);
+
+    	//sleep until 20 ms period ends
+    	while( diff < 2000000 )
+    	{
+    		time2 = globalTimer.getTicks();
+    		diff = time2-time1;
+    	}
     }
 
     cleanup_platform();
