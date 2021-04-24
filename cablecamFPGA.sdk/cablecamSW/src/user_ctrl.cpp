@@ -128,7 +128,7 @@ namespace user_ctrl
 			{
 				if( (autoDirection > 0 && position < waypointB) || (autoDirection < 0 && position > waypointA) )
 				{
-					driveMotor.SetSpeed(userInput.getAutoSpeed());
+					driveMotor.SetSpeed(150000 + (autoDirection * userInput.getAutoSpeed()));
 				}
 				else
 				{
