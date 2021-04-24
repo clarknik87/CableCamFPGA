@@ -133,16 +133,14 @@ namespace user_ctrl
 				else
 				{
 					driveMotor.StopDriveMotor();
-					//waitState = true;
-					for(int i=0; i < 100000000; ++i);
-					autoDirection = -autoDirection;
-					//time1 = globalTimer.getTicks();
+					waitState = true;
+					time1 = globalTimer.getTicks();
 				}
 			}
 			else
 			{
 				time2 = globalTimer.getTicks();
-				if( time2-time1 == delayTime )
+				if( time2-time1 >= delayTime )
 				{
 					autoDirection = -autoDirection;
 					waitState = false;

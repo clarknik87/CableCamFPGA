@@ -26,7 +26,10 @@ void HandController::setPitch(uint32_t val)
 void HandController::setEndpointSwitch(uint32_t val)
 {
 	if( val >= 100000 && val <= 200000 )
-		endpointSwitch = val;
+	{
+		if( (val > 149990 && val < 150010) || (val < 100010) || (val > 199990) )
+			endpointSwitch = val;
+	}
 }
 
 void HandController::setControlSwitch(uint32_t val)
