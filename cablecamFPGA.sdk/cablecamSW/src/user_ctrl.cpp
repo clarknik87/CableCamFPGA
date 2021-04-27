@@ -54,8 +54,8 @@ namespace user_ctrl
 		//channel5.EnableInterrupt();
 		//channel6.EnableInterrupt();
 
-		waypointA = -100;
-		waypointB = 100;
+		waypointA = -1000;
+		waypointB = 1000;
 
 		return XST_SUCCESS;
 	}

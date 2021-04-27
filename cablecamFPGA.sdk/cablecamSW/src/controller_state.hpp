@@ -25,6 +25,13 @@ class HandController
 	uint32_t cameraPitch;
 	uint32_t endpointSwitch;
 	uint32_t controlSwitch;
+
+	uint32_t driveCnt;
+	bool	 driveEnable = false;
+
+	uint32_t autoCnt;
+	bool	 autoEnable = false;
+
 public:
 	uint32_t 		getYaw() 				{ return cameraYaw; }
 	uint32_t 		getPitch() 				{ return cameraPitch; }

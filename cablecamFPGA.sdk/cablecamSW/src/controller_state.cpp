@@ -35,15 +35,55 @@ void HandController::setEndpointSwitch(uint32_t val)
 void HandController::setControlSwitch(uint32_t val)
 {
 	if( val >= 100000 && val <= 200000 )
-		controlSwitch = val;
+	{
+		if( val < 102000 || val > 19800 )
+			controlSwitch = val;
+	}
 }
 
 void HandController::setDriveMotor(uint32_t val)
 {
-	if( val >= 100000 && val <= 200000 && val <= maxDriveSpeed )
+	uint32_t scaledval = 150000;
+	if( val >= 100000 && val <= 200000 )
 	{
-		if( val != 168726 && val != 168725 ) //The controller randomly sends out blips like this
-			driveMotor = val;
+		if(!driveEnable)
+		{
+			if (driveMotor > 148000 && driveMotor < 152000)
+			{
+				if (val < 148000 || val > 152000)
+				{
+					driveCnt++;
+				}
+				else
+				{
+					driveCnt = 0;
+				}
+
+				if (driveCnt == 18)
+				{
+					driveEnable = true;
+				}
+			}
+		}
+
+		if(driveEnable)
+		{
+			if( val <= 148000 )
+			{
+				scaledval = (val - 100000)*(0.75) + 100000;
+			}
+			else if( val >= 152000 )
+			{
+				scaledval = (val - 152000)*0.333 + 159000;
+			}
+			else
+			{
+				driveEnable = false;
+				scaledval = 150000;
+			}
+
+			driveMotor = scaledval;
+		}
 	}
 }
 
@@ -51,10 +91,36 @@ void HandController::setAutoSpeed(uint32_t val)
 {
 	if( val >= 100000 && val <= 200000 )
 	{	
-		autospeed = (val-100000)/5; // Value between 0 and 20,000. Add or subtract this to 150,000 for auto speed and direction.
-	}	
-	else
-		autospeed = 0;
+		if( !autoEnable )
+		{
+			if( val > 102000 )
+			{
+				autoCnt++;
+			}
+			else
+			{
+				autoCnt = 0;
+			}
+
+			if( autoCnt == 18 )
+			{
+				autoEnable = true;
+			}
+		}
+
+		if( autoEnable )
+		{
+			if( val > 102000 )
+			{
+				autospeed = (val - 102000)*(3.0/49.0) + 14000;
+			}
+			else
+			{
+				autoEnable = false;
+				autospeed = 0;
+			}
+		}
+	}
 }
 
 SwitchPosition HandController::getEndpointSwitch()
