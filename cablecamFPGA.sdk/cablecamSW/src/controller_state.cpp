@@ -36,7 +36,7 @@ void HandController::setControlSwitch(uint32_t val)
 {
 	if( val >= 100000 && val <= 200000 )
 	{
-		if( val < 102000 || val > 19800 )
+		if( val < 102000 || val > 198000 )
 			controlSwitch = val;
 	}
 }

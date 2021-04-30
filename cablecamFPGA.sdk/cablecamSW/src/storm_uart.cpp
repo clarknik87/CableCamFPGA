@@ -227,7 +227,7 @@ namespace storm_uart
 		disableMotors();
 		//Set any parameters (most should be saved into controller flash)
 		enableMotors();
-		restartController();
+		//restartController();
 		sleep(2);
 		waitUntilReady();
 
@@ -307,8 +307,8 @@ namespace storm_uart
 
 			uint64_t start_time = globalTimer.getTicks();
 			uint64_t curr_time = start_time;
-			uint64_t timeout = 10000*(p_sendlength+p_recvlength);
-			while(!update_required || curr_time-start_time < timeout)
+			uint64_t timeout = 15000*(p_sendlength+p_recvlength);
+			while(!update_required && curr_time-start_time < timeout)
 			{
 				curr_time = globalTimer.getTicks();
 			}
