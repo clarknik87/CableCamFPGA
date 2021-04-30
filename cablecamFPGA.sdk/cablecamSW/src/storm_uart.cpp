@@ -308,7 +308,7 @@ namespace storm_uart
 			uint64_t start_time = globalTimer.getTicks();
 			uint64_t curr_time = start_time;
 			uint64_t timeout = 15000*(p_sendlength+p_recvlength);
-			while(!update_required && curr_time-start_time < timeout)
+			while(!update_required || curr_time-start_time < timeout)
 			{
 				curr_time = globalTimer.getTicks();
 			}

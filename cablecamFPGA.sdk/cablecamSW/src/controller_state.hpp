@@ -19,7 +19,7 @@ enum class SwitchPosition
 
 class HandController
 {
-	uint32_t driveMotor;
+	uint32_t driveMotor = 150000;
 	uint32_t autospeed;
 	uint32_t cameraYaw;
 	uint32_t cameraPitch;

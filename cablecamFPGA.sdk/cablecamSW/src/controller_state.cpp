@@ -59,7 +59,7 @@ void HandController::setDriveMotor(uint32_t val)
 					driveCnt = 0;
 				}
 
-				if (driveCnt == 18)
+				if (driveCnt == 25)
 				{
 					driveEnable = true;
 				}
