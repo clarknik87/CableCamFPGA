@@ -129,11 +129,11 @@ set_property PACKAGE_PIN U18 [get_ports rst_l]
 #set_property PACKAGE_PIN L2 [get_ports {PWMChannel[1]}]					
 #	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[1]}]
 #Sch name = JA3
-#set_property PACKAGE_PIN J2 [get_ports {PWMChannel[0]}]					
-#	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[0]}]
-#Sch name = JA4
-set_property PACKAGE_PIN G2 [get_ports {driveMotor}]					
+set_property PACKAGE_PIN J2 [get_ports {driveMotor}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {driveMotor}]
+#Sch name = JA4
+#set_property PACKAGE_PIN G2 [get_ports {driveMotor}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {driveMotor}]
 ##Sch name = JA7
 #set_property PACKAGE_PIN H1 [get_ports {PWMChannel[3]}]					
 #	set_property IOSTANDARD LVCMOS33 [get_ports {PWMChannel[3]}]

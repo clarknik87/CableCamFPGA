@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include "sleep.h"
+#include "drivers/timer_helper.hpp"
 
 #include "packets/version.hpp"
 #include "packets/parameter.hpp"
@@ -296,15 +297,23 @@ namespace storm_uart
 
 	int sendreceive(uint8_t *p_sendbuf, int p_sendlength, uint8_t *p_recvbuf, int p_recvlength)
 	{
+
 		if (p_sendbuf == nullptr || p_recvbuf == nullptr)
 			return XST_NO_DATA;
 
-		if (send(p_sendbuf, p_sendlength) == XST_DEVICE_BUSY)
-			return XST_DEVICE_BUSY;
-
-		while(!update_required)
+		while( !update_required )
 		{
+			send(p_sendbuf, p_sendlength);
+
+			uint64_t start_time = globalTimer.getTicks();
+			uint64_t curr_time = start_time;
+			uint64_t timeout = 10000*(p_sendlength+p_recvlength);
+			while(!update_required || curr_time-start_time < timeout)
+			{
+				curr_time = globalTimer.getTicks();
+			}
 		}
+
 		update_required = false;
 
 		if(p_recvlength != recv_length)

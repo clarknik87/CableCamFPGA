@@ -125,11 +125,11 @@ int main()
     	position = positionSensor.GetPosition();
     	//segmentDisplays.DisplayValue(position);
     	user_ctrl::update_controller_state(userInput);
-    	debug_uart::update();
+    	//debug_uart::update();
     	user_ctrl::update_drive_motor(userInput, position);
     	storm_uart::update(userInput);
 
-    	//sleep until 20 ms period ends
+    	//sleep until 20 ms period ends (50 Hz update rate)
     	while( diff < 2000000 )
     	{
     		time2 = globalTimer.getTicks();
